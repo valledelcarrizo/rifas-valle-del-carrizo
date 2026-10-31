@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rifas Valle del Carrizo</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f7f3;
+  color: #26352b;
+}
+header {
+  background: #174b32;
+  color: white;
+  text-align: center;
+  padding: 35px 15px;
+  border-bottom: 5px solid #c5a34a;
+}
+header h1 { margin: 0; font-size: 30px; }
+header p { color: #e6d59c; }
+main {
+  max-width: 950px;
+  margin: 25px auto;
+  padding: 15px;
+}
+.panel {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px #00000012;
+}
+h2 { color: #174b32; }
+.info {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0;
+}
+.info div {
+  background: #edf4ee;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  flex: 1;
+  min-width: 110px;
+}
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 7px;
+}
+.number {
+  padding: 12px 2px;
+  border: 1px solid #b8c9ba;
+  border-radius: 6px;
+  background: white;
+  color: #174b32;
+  font-weight: bold;
+  cursor: pointer;
+}
+.number.selected {
+  background: #174b32;
+  color: white;
+}
+.number:disabled {
+  background: #ddd;
+  color: #888;
+  cursor: not-allowed;
+}
+button {
+  cursor: pointer;
+}
+.action {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+  background: #174b32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 17px;
+}
+.action:hover { background: #236b47; }
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #777;
+}
+@media(max-width:500px) {
+  .numbers { grid-template-columns: repeat(5, 1fr); }
+  header h1 { font-size: 23px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>RIFAS VALLE DEL CARRIZO</h1>
+  <p>La suerte puede estar de tu lado</p>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>¡Bienvenidos!</h2>
+    <p>Selecciona tus números favoritos para nuestra próxima rifa.</p>
+
+    <div class="info">
+      <div>Disponibles<br><strong id="available">110</strong></div>
+      <div>Seleccionados<br><strong id="chosen">0</strong></div>
+      <div>Total<br><strong>110</strong></div>
+    </div>
+
+    <h2>Selecciona tus números</h2>
+    <p>Los números verdes oscuros son los que has seleccionado.</p>
+
+    <div class="numbers" id="numbers"></div>
+
+    <button class="action" onclick="confirmSelection()">
+      Continuar
+    </button>
+    <p id="message" style="text-align:center"></p>
+  </section>
+</main>
+
+<footer>
+  © 2026 Rifas Valle del Carrizo
+  <br>La voz de nuestra gente
+</footer>
+
+<script>
+const selected = new Set();
+const numbers = document.getElementById("numbers");
+
+for (let i = 0; i <= 109; i++) {
+  const button = document.createElement("button");
+  button.className = "number";
+  button.textContent = String(i).padStart(3, "0");
+
+  button.addEventListener("click", () => {
+    if (selected.has(i)) {
+      selected.delete(i);
+      button.classList.remove("selected");
+    } else {
+      selected.add(i);
+      button.classList.add("selected");
+    }
+    updateCounters();
+  });
+
+  numbers.appendChild(button);
+}
+
+function updateCounters() {
+  document.getElementById("chosen").textContent = selected.size;
+  document.getElementById("available").textContent = 110 - selected.size;
+}
+
+function confirmSelection() {
+  const message = document.getElementById("message");
+
+  if (selected.size === 0) {
+    message.textContent = "Primero selecciona uno o más números.";
+    return;
+  }
+
+  const chosen = [...selected]
+    .sort((a,b) => a-b)
+    .map(n => String(n).padStart(3,"0"));
+
+  message.textContent = "Tus números seleccionados: " + chosen.join(", ");
+}
+</script>
+
+</body>
+</html>
