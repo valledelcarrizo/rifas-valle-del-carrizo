@@ -176,6 +176,43 @@ function confirmSelection() {
   message.textContent = "Tus números seleccionados: " + chosen.join(", ");
 }
 </script>
+<div id="reserva" style="max-width:600px;margin:25px auto;padding:20px;background:#fff;border-radius:12px;">
+  <h2>Solicitar mis números</h2>
 
+  <label>Nombre completo</label>
+  <input id="nombreReserva" type="text" placeholder="Tu nombre"
+    style="width:100%;padding:12px;margin:8px 0;">
+
+  <label>WhatsApp</label>
+  <input id="whatsappReserva" type="tel" placeholder="Tu número"
+    style="width:100%;padding:12px;margin:8px 0;">
+
+  <button onclick="enviarReserva()"
+    style="width:100%;padding:14px;background:#168344;color:white;border:0;border-radius:8px;font-size:17px;">
+    ENVIAR SOLICITUD
+  </button>
+</div>
+
+<script>
+function enviarReserva() {
+  const nombre = document.getElementById("nombreReserva").value.trim();
+  const telefono = document.getElementById("whatsappReserva").value.trim();
+
+  if (!nombre || !telefono) {
+    alert("Escribe tu nombre y WhatsApp.");
+    return;
+  }
+
+  const mensaje = "Hola, soy " + nombre +
+    ". Mi WhatsApp es " + telefono +
+    ". Quiero solicitar los números seleccionados: " +
+    [...selected].sort((a,b)=>a-b).join(", ");
+
+  window.open(
+    "https://wa.me/526682298000?text=" + encodeURIComponent(mensaje),
+    "_blank"
+  );
+}
+</script>
 </body>
 </html>
