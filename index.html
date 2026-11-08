@@ -238,8 +238,8 @@ COPIAR NÚMERO DE TARJETA
 <section id="sellerAccess" style="max-width:420px;margin:25px auto;padding:20px;border:1px solid #ccc;border-radius:12px;text-align:center;">
   <h2>Acceso de vendedores</h2>
 
-  <input id="sellerEmail" type="email"
-    placeholder="Correo electrónico"
+<input id="sellerUsername" type="text"
+    placeholder="Usuario (Arely, Mónica, Noemy o Fernando)"
     style="width:100%;padding:12px;margin:8px 0;">
 
   <input id="sellerPassword" type="password"
@@ -269,8 +269,22 @@ const SUPABASE_ANON_KEY = SUPABASE_KEY;
 let sellerSession = null;
 
 async function sellerLogin() {
-  const email = document.getElementById("sellerEmail").value.trim();
-  const password = document.getElementById("sellerPassword").value;
+const username = document.getElementById("sellerUsername").value.trim().toLowerCase();
+
+const usuarios = {
+  arely: "torres32arely@gmail.com",
+  monica: "monikvazquez87@gmail.com",
+  noemy: "beltrannoemy340@gmail.com",
+  fernando: "ferpalmavalle@gmail.com"
+};
+
+const email = usuarios[username];
+const password = document.getElementById("sellerPassword").value;
+
+if (!email) {
+  document.getElementById("sellerMessage").textContent = "Usuario no reconocido.";
+  return;
+}
 
   const message = document.getElementById("sellerMessage");
   message.textContent = "Verificando acceso...";
