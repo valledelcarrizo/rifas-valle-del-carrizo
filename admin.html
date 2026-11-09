@@ -229,10 +229,20 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_5hkytZdrjhkHUFkqC0u22A_Pjr68fOo";
 
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+let supabase = null;
+
+if (
+  window.supabase &&
+  typeof window.supabase.createClient === "function"
+) {
+  supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+} else {
+  document.getElementById("mensaje").textContent =
+    "ERROR: No se pudo cargar la conexión con Supabase.";
+}
 
 async function iniciarSesion() {
 
