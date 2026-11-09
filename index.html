@@ -225,7 +225,8 @@ COPIAR NÚMERO DE TARJETA
 <p>Los boletos se reservan al verificar el pago.</p>
 <p>Ya que haga su pago mande whatsapp a Miriam Arely 668 233 8761.</p>
 </section>
-<section style="text-align:center; padding:25px 10px;">
+
+  <section style="text-align:center; padding:25px 10px;">
   <img
     src="pagos-miriam.jpg"
     alt="Formas de pago - Rifa Valle del Carrizo"
@@ -233,53 +234,16 @@ COPIAR NÚMERO DE TARJETA
     border-radius:14px;"
   >
 </section>
-  
-<!-- PUBLICIDAD VALLE DEL CARRIZO -->
-<div id="logoPublicidad" style="
-  position:fixed;
-  bottom:15px;
-  left:50%;
-  transform:translateX(-50%);
-  width:166.5px;
-  max-width:50vw;
-  z-index:9999;
-  display:none;
-">
+
+
+  <section style="text-align:center; padding:25px 10px;">
   <img
     src="logopublicidad2.jpg"
-    alt="Logo de valledelcarrizo.com"
-    style="width:100%;height:auto;display:block;cursor:pointer;"
-    onclick="document.getElementById('adminPopup').style.display='block'"
+    alt="Logo del Grupo de Whatsapp del Valle del Carrizo"
+    style="width:100%; height:auto;
+    border-radius:14px;"
   >
-</div>
-
-<script>
-window.addEventListener("scroll", function () {
-  const logo = document.getElementById("logoPublicidad");
-  const llegoAlFinal =
-    window.innerHeight + window.scrollY >=
-    document.documentElement.scrollHeight - 20;
-
-  logo.style.display = llegoAlFinal ? "block" : "none";
-});
-</script>
-
+</section>
   
-
-
-<div id="adminPopup"
-style="display:none;position:fixed;inset:0;background:#0009;z-index:10000;padding:20px;">
-
-  <div style="background:white;max-width:450px;height:80vh;margin:5vh auto;padding:10px;border-radius:12px;position:relative;">
-
-    <button onclick="document.getElementById('adminPopup').style.display='none'"
-    style="float:right;padding:8px 15px;">✕ Cerrar</button>
-
-    <iframe src="admin.html"
-    style="width:100%;height:90%;border:0;margin-top:25px;">
-    </iframe>
-
-  </div>
-</div>
 </body>
 </html>
