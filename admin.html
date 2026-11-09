@@ -1,1 +1,402 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administración | Rifas Valle del Carrizo</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #f3f5f1;
+  color: #26352a;
+}
+
+header {
+  background: #174b32;
+  color: white;
+  text-align: center;
+  padding: 22px;
+  border-radius: 12px;
+}
+
+main {
+  max-width: 950px;
+  margin: 25px auto;
+}
+
+.card {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px #0001;
+}
+
+input {
+  width: 100%;
+  padding: 13px;
+  margin: 8px 0 15px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  font-size: 16px;
+}
+
+button {
+  padding: 12px 20px;
+  background: #176b35;
+  color: white;
+  border: 0;
+  border-radius: 7px;
+  font-size: 15px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+button:hover {
+  background: #104b28;
+}
+
+#mensaje {
+  text-align: center;
+  margin: 15px;
+  font-weight: bold;
+}
+
+.resumen {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.contador {
+  background: #f3f5f1;
+  padding: 18px;
+  border-radius: 9px;
+  text-align: center;
+  flex: 1;
+  min-width: 120px;
+}
+
+.contador strong {
+  display: block;
+  font-size: 27px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+  gap: 8px;
+}
+
+.numero {
+  padding: 10px 3px;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: bold;
+  background: #e5f5e9;
+  color: #176b35;
+}
+
+.numero small {
+  display: block;
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+.numero.sold {
+  background: #fff0f0;
+  color: #c52222;
+}
+
+.oculto {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>RIFAS VALLE DEL CARRIZO</h1>
+  <p>Panel privado de administración</p>
+</header>
+
+<main>
+
+<section id="login" class="card">
+
+  <h2>Acceso de administrador</h2>
+
+  <label>Correo electrónico</label>
+
+  <input
+    id="correo"
+    type="email"
+    value="valledelcarrizosinaloa@gmail.com"
+    autocomplete="username"
+    placeholder="Correo electrónico">
+
+  <label>Contraseña</label>
+
+  <input
+    id="password"
+    type="password"
+    autocomplete="current-password"
+    placeholder="Escribe tu contraseña">
+
+  <button onclick="iniciarSesion()">
+    INICIAR SESIÓN
+  </button>
+
+  <p id="mensaje"></p>
+
+</section>
+
+<section id="panel" class="oculto">
+
+  <div class="card">
+
+    <h2>Bienvenido, administrador</h2>
+
+    <p>Sesión privada autorizada.</p>
+
+    <button onclick="cargarNumeros()">
+      ACTUALIZAR NÚMEROS
+    </button>
+
+    <button onclick="cerrarSesion()">
+      CERRAR SESIÓN
+    </button>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Estado de la rifa</h2>
+
+    <div class="resumen">
+
+      <div class="contador">
+        <strong id="total">0</strong>
+        Números
+      </div>
+
+      <div class="contador">
+        <strong id="libres">0</strong>
+        Disponibles
+      </div>
+
+      <div class="contador">
+        <strong id="ocupados">0</strong>
+        Vendidos
+      </div>
+
+    </div>
+
+    <p id="estado" style="text-align:center">
+      Consultando números...
+    </p>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Listado de boletos</h2>
+
+    <div class="grid" id="numeros"></div>
+
+  </div>
+
+</section>
+
+</main>
+
+<script>
+
+const SUPABASE_URL =
+"https://kptejintrxbepdueoryd.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_5hkytZdrjhkHUFkqC0u22A_Pjr68fOo";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+async function iniciarSesion() {
+
+  const mensaje = document.getElementById("mensaje");
+
+  const correo =
+    document.getElementById("correo").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  mensaje.textContent = "Verificando acceso...";
+
+  const { data, error } =
+    await supabase.auth.signInWithPassword({
+      email: correo,
+      password: password
+    });
+
+  if (error) {
+    mensaje.textContent =
+      "Error de acceso: " + error.message;
+    return;
+  }
+
+  await verificarAdministrador(data.user);
+}
+
+async function verificarAdministrador(usuario) {
+
+  const mensaje = document.getElementById("mensaje");
+
+  const { data: perfil, error } = await supabase
+    .from("profiles")
+    .select("role, active")
+    .eq("id", usuario.id)
+    .single();
+
+  if (
+    error ||
+    !perfil ||
+    perfil.role !== "admin" ||
+    perfil.active !== true
+  ) {
+
+    mensaje.textContent =
+      "Acceso denegado. No tienes permisos de administrador.";
+
+    await supabase.auth.signOut();
+
+    return;
+  }
+
+  document.getElementById("login")
+    .classList.add("oculto");
+
+  document.getElementById("panel")
+    .classList.remove("oculto");
+
+  cargarNumeros();
+}
+
+async function cargarNumeros() {
+
+  const estado =
+    document.getElementById("estado");
+
+  const contenedor =
+    document.getElementById("numeros");
+
+  estado.textContent = "Actualizando números...";
+
+  try {
+
+    const { data, error } = await supabase
+      .from("public_ticket_board_public")
+      .select("raffle_slug,raffle_name,ticket_code,ticket_status")
+      .eq("raffle_slug", "primera-rifa-1000")
+      .order("ticket_code", { ascending: true });
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      throw new Error("No se encontraron números.");
+    }
+
+    contenedor.innerHTML = "";
+
+    let vendidos = 0;
+
+    data.forEach(item => {
+
+      const estaVendido =
+        String(item.ticket_status).toLowerCase() === "sold";
+
+      if (estaVendido) vendidos++;
+
+      const tarjeta =
+        document.createElement("div");
+
+      tarjeta.className =
+        "numero" + (estaVendido ? " sold" : "");
+
+      const numero =
+        document.createElement("div");
+
+      numero.textContent = item.ticket_code;
+
+      const etiqueta =
+        document.createElement("small");
+
+      etiqueta.textContent =
+        estaVendido ? "VENDIDO" : "DISPONIBLE";
+
+      tarjeta.appendChild(numero);
+      tarjeta.appendChild(etiqueta);
+
+      contenedor.appendChild(tarjeta);
+
+    });
+
+    document.getElementById("total").textContent =
+      data.length;
+
+    document.getElementById("ocupados").textContent =
+      vendidos;
+
+    document.getElementById("libres").textContent =
+      data.length - vendidos;
+
+    estado.textContent =
+      "Números actualizados correctamente.";
+
+  } catch (error) {
+
+    estado.textContent =
+      "Error: " + error.message;
+
+  }
+}
+
+async function cerrarSesion() {
+
+  await supabase.auth.signOut();
+
+  window.location.reload();
+
+}
+
+async function revisarSesion() {
+
+  const { data } = await supabase.auth.getSession();
+
+  if (data.session) {
+    await verificarAdministrador(data.session.user);
+  }
+
+}
+
+revisarSesion();
+
+</script>
+
+</body>
+</html>
+
