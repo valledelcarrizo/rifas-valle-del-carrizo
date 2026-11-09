@@ -44,22 +44,22 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <body>
 <header>
   <h1>RIFAS VALLE DEL CARRIZO</h1>
-  <p>Consulta los nÃºmeros de nuestra rifa</p>
-  <p>Â¡Gracias por apoyar al Valle del Carrizo!</p>
+  <p>Consulta los números de nuestra rifa</p>
+  <p>¡Gracias por apoyar al Valle del Carrizo!</p>
 </header>
 
 <main>
   <div class="resumen">
-    <div class="contador"><strong id="total">110</strong>NÃºmeros</div>
-    <div class="contador disponible"><strong id="libres">â€”</strong>Disponibles</div>
-    <div class="contador vendido"><strong id="ocupados">â€”</strong>Vendidos</div>
+    <div class="contador"><strong id="total">110</strong>Números</div>
+    <div class="contador disponible"><strong id="libres">—</strong>Disponibles</div>
+    <div class="contador vendido"><strong id="ocupados">—</strong>Vendidos</div>
   </div>
-  <p id="estado">Consultando nÃºmeros...</p>
+  <p id="estado">Consultando números...</p>
   <div class="grid" id="numeros"></div>
-  <button id="actualizar" onclick="cargarNumeros()">Actualizar nÃºmeros</button>
+  <button id="actualizar" onclick="cargarNumeros()">Actualizar números</button>
 </main>
 
-<footer>Rifas Valle del Carrizo Â· InformaciÃ³n actualizada desde nuestra base de datos</footer>
+<footer>Rifas Valle del Carrizo · Información actualizada desde nuestra base de datos</footer>
 
 <section class="seccion-pago">
   <h2>FORMAS DE PAGO</h2>
@@ -67,12 +67,12 @@ button:disabled{opacity:.55;cursor:not-allowed}
   <p><strong>BanCoppel</strong></p>
   <p>Titular: Miriam Arely Torres</p>
   <p style="font-size:20px;font-weight:bold;">4169160642443163</p>
-  <button class="boton-copiar" onclick="copiarTarjeta()">COPIAR NÃšMERO DE TARJETA</button>
+  <button class="boton-copiar" onclick="copiarTarjeta()">COPIAR NÚMERO DE TARJETA</button>
   <hr>
   <h3>IMPORTANTE</h3>
-  <p>Â¡Gracias por su apoyo!</p>
+  <p>¡Gracias por su apoyo!</p>
   <p>Los boletos se reservan al verificar el pago.</p>
-  <p>DespuÃ©s de hacer su pago, comunÃ­quese por WhatsApp con Miriam Arely: 668 233 8761.</p>
+  <p>Después de hacer su pago, comuníquese por WhatsApp con Miriam Arely: 668 233 8761.</p>
 </section>
 
 <section class="imagen-seccion">
@@ -83,42 +83,42 @@ button:disabled{opacity:.55;cursor:not-allowed}
 </section>
 
 <section id="accesoAdmin" class="admin-acceso">
-  <h2>AdministraciÃ³n</h2>
-  <label for="correoAdmin">Correo electrÃ³nico</label>
-  <input id="correoAdmin" type="email" value="valledelcarrizosinaloa@gmail.com" autocomplete="username" placeholder="Correo electrÃ³nico">
-  <label for="passwordAdmin">ContraseÃ±a</label>
-  <input id="passwordAdmin" type="password" autocomplete="current-password" placeholder="Escribe tu contraseÃ±a">
-  <button id="botonLogin" onclick="iniciarSesion()">INICIAR SESIÃ“N</button>
+  <h2>Administración</h2>
+  <label for="correoAdmin">Correo electrónico</label>
+  <input id="correoAdmin" type="email" value="valledelcarrizosinaloa@gmail.com" autocomplete="username" placeholder="Correo electrónico">
+  <label for="passwordAdmin">Contraseña</label>
+  <input id="passwordAdmin" type="password" autocomplete="current-password" placeholder="Escribe tu contraseña">
+  <button id="botonLogin" onclick="iniciarSesion()">INICIAR SESIÓN</button>
   <p id="mensajeAdmin"></p>
 </section>
 
 <section id="panelAdmin" class="admin-panel oculto">
   <div class="admin-card">
-    <h2>Panel de administraciÃ³n</h2>
-    <p style="text-align:center;">SesiÃ³n de administrador autorizada.</p>
-    <button onclick="cargarNumerosAdmin()">ACTUALIZAR NÃšMEROS</button>
-    <button onclick="cerrarSesion()">CERRAR SESIÃ“N</button>
+    <h2>Panel de administración</h2>
+    <p style="text-align:center;">Sesión de administrador autorizada.</p>
+    <button onclick="cargarNumerosAdmin()">ACTUALIZAR NÚMEROS</button>
+    <button onclick="cerrarSesion()">CERRAR SESIÓN</button>
   </div>
 
   <div class="admin-card">
     <h2>Estado de la rifa</h2>
     <div class="resumen">
-      <div class="contador"><strong id="adminTotal">0</strong>NÃºmeros</div>
+      <div class="contador"><strong id="adminTotal">0</strong>Números</div>
       <div class="contador disponible"><strong id="adminLibres">0</strong>Disponibles</div>
       <div class="contador vendido"><strong id="adminOcupados">0</strong>Vendidos</div>
     </div>
-    <p id="estadoAdmin" style="text-align:center;">Consultando nÃºmeros...</p>
+    <p id="estadoAdmin" style="text-align:center;">Consultando números...</p>
   </div>
 
   <div class="admin-card">
     <h2>Registrar boleto vendido</h2>
-    <p class="ayuda">Selecciona un boleto verde disponible en el listado. DespuÃ©s captura los datos del comprador.</p>
+    <p class="ayuda">Selecciona un boleto verde disponible en el listado. Después captura los datos del comprador.</p>
     <p style="text-align:center;">Boleto seleccionado: <strong id="boletoSeleccionado">Ninguno</strong></p>
     <form class="venta-form" id="formVenta" onsubmit="registrarVenta(event)">
       <label for="comprador">Nombre del comprador</label>
       <input id="comprador" type="text" maxlength="150" required placeholder="Nombre completo">
-      <label for="telefonoComprador">TelÃ©fono (opcional)</label>
-      <input id="telefonoComprador" type="tel" maxlength="30" placeholder="TelÃ©fono del comprador">
+      <label for="telefonoComprador">Teléfono (opcional)</label>
+      <input id="telefonoComprador" type="tel" maxlength="30" placeholder="Teléfono del comprador">
       <label for="estadoPago">Estado del pago</label>
       <select id="estadoPago">
         <option value="paid">Pagado</option>
@@ -151,23 +151,23 @@ if (window.supabase && typeof window.supabase.createClient === "function") {
   supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 } else {
   document.getElementById("mensajeAdmin").textContent =
-    "No se pudo cargar la conexiÃ³n de administraciÃ³n.";
+    "No se pudo cargar la conexión de administración.";
 }
 
 async function copiarTarjeta() {
   const tarjeta = "4169160642443163";
   try {
     await navigator.clipboard.writeText(tarjeta);
-    alert("NÃºmero de tarjeta copiado.");
+    alert("Número de tarjeta copiado.");
   } catch (error) {
-    alert("No se pudo copiar automÃ¡ticamente. Puede seleccionar el nÃºmero y copiarlo.");
+    alert("No se pudo copiar automáticamente. Puede seleccionar el número y copiarlo.");
   }
 }
 
 async function cargarNumeros() {
   const estado = document.getElementById("estado");
   const contenedor = document.getElementById("numeros");
-  estado.textContent = "Actualizando nÃºmeros...";
+  estado.textContent = "Actualizando números...";
   try {
     const { data, error } = await supabaseClient
       .from("public_ticket_board_public")
@@ -175,7 +175,7 @@ async function cargarNumeros() {
       .eq("raffle_slug", RAFFLE_SLUG)
       .order("ticket_code", { ascending: true });
     if (error) throw error;
-    if (!data || data.length === 0) throw new Error("No se encontraron nÃºmeros en la vista pÃºblica.");
+    if (!data || data.length === 0) throw new Error("No se encontraron números en la vista pública.");
 
     contenedor.innerHTML = "";
     let vendidos = 0;
@@ -187,14 +187,14 @@ async function cargarNumeros() {
       const numero = document.createElement("div");
       numero.textContent = item.ticket_code;
       const etiqueta = document.createElement("small");
-      etiqueta.textContent = estaVendido ? "âœ• VENDIDO" : "DISPONIBLE";
+      etiqueta.textContent = estaVendido ? "✕ VENDIDO" : "DISPONIBLE";
       tarjeta.append(numero, etiqueta);
       contenedor.appendChild(tarjeta);
     });
     document.getElementById("total").textContent = data.length;
     document.getElementById("ocupados").textContent = vendidos;
     document.getElementById("libres").textContent = data.length - vendidos;
-    estado.textContent = "NÃºmeros actualizados correctamente.";
+    estado.textContent = "Números actualizados correctamente.";
   } catch (error) {
     estado.textContent = "Error: " + error.message;
   }
@@ -206,7 +206,7 @@ async function iniciarSesion() {
   const correo = document.getElementById("correoAdmin").value.trim();
   const password = document.getElementById("passwordAdmin").value;
   if (!correo || !password) {
-    mensaje.textContent = "Escribe tu correo y contraseÃ±a.";
+    mensaje.textContent = "Escribe tu correo y contraseña.";
     return;
   }
   if (!supabaseClient) {
@@ -219,13 +219,13 @@ async function iniciarSesion() {
   try {
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email: correo, password });
     if (error) throw error;
-    if (!data.user) throw new Error("No se recibiÃ³ informaciÃ³n del usuario.");
+    if (!data.user) throw new Error("No se recibió información del usuario.");
     await verificarAdministrador(data.user);
   } catch (error) {
     mensaje.textContent = "Error: " + error.message;
   } finally {
     boton.disabled = false;
-    boton.textContent = "INICIAR SESIÃ“N";
+    boton.textContent = "INICIAR SESIÓN";
   }
 }
 
@@ -252,7 +252,7 @@ async function verificarAdministrador(usuario) {
 async function cargarNumerosAdmin() {
   const estado = document.getElementById("estadoAdmin");
   const contenedor = document.getElementById("numerosAdmin");
-  estado.textContent = "Actualizando nÃºmeros...";
+  estado.textContent = "Actualizando números...";
   document.getElementById("mensajeVenta").textContent = "";
   try {
     const { data: rifa, error: errorRifa } = await supabaseClient
@@ -282,7 +282,7 @@ async function cargarNumerosAdmin() {
       const numero = document.createElement("div");
       numero.textContent = String(ticket.ticket_number).padStart(3, "0");
       const etiqueta = document.createElement("small");
-      etiqueta.textContent = estaVendido ? "âœ• VENDIDO" :
+      etiqueta.textContent = estaVendido ? "✕ VENDIDO" :
         (estadoTicket === "reserved" ? "RESERVADO" : "DISPONIBLE");
       tarjeta.append(numero, etiqueta);
       if (estadoTicket === "available") {
@@ -297,7 +297,7 @@ async function cargarNumerosAdmin() {
     document.getElementById("adminOcupados").textContent = vendidos;
     document.getElementById("adminLibres").textContent =
       tickets.filter(t => String(t.status).toLowerCase() === "available").length;
-    estado.textContent = "NÃºmeros actualizados correctamente.";
+    estado.textContent = "Números actualizados correctamente.";
     if (boletoElegido && !tickets.some(t => t.id === boletoElegido.id && String(t.status).toLowerCase() === "available")) {
       boletoElegido = null;
       actualizarBoletoSeleccionado();
@@ -334,7 +334,7 @@ async function registrarVenta(event) {
   const paymentStatus = document.getElementById("estadoPago").value;
 
   if (!usuarioAdministrador) {
-    mensaje.textContent = "La sesiÃ³n de administrador no estÃ¡ activa.";
+    mensaje.textContent = "La sesión de administrador no está activa.";
     return;
   }
   if (!boletoElegido || !nombre) {
@@ -358,7 +358,7 @@ async function registrarVenta(event) {
       .maybeSingle();
 
     if (errorUpdate) throw errorUpdate;
-    if (!actualizado) throw new Error("Este boleto ya no estÃ¡ disponible. Actualiza el listado.");
+    if (!actualizado) throw new Error("Este boleto ya no está disponible. Actualiza el listado.");
     ticketActualizado = true;
 
     const venta = {
@@ -378,7 +378,7 @@ async function registrarVenta(event) {
     const { error: errorInsert } = await supabaseClient.from("sales").insert(venta);
     if (errorInsert) throw errorInsert;
 
-    mensaje.textContent = "Â¡Boleto " + String(ticket.ticket_number).padStart(3, "0") + " registrado correctamente!";
+    mensaje.textContent = "¡Boleto " + String(ticket.ticket_number).padStart(3, "0") + " registrado correctamente!";
     document.getElementById("formVenta").reset();
     boletoElegido = null;
     actualizarBoletoSeleccionado();
@@ -390,9 +390,9 @@ async function registrarVenta(event) {
         .from("tickets").update({ status: "available" })
         .eq("id", boletoElegido.id).eq("status", "sold");
       if (rollbackError) {
-        mensaje.textContent = "La venta no terminÃ³ correctamente y no se pudo restaurar el boleto. Revisa el panel antes de volver a intentarlo. Detalle: " + error.message;
+        mensaje.textContent = "La venta no terminó correctamente y no se pudo restaurar el boleto. Revisa el panel antes de volver a intentarlo. Detalle: " + error.message;
       } else {
-        mensaje.textContent = "No se pudo registrar la venta. El boleto se restaurÃ³ como disponible. Detalle: " + error.message;
+        mensaje.textContent = "No se pudo registrar la venta. El boleto se restauró como disponible. Detalle: " + error.message;
       }
     } else {
       mensaje.textContent = "No se pudo registrar la venta. Detalle: " + error.message;
@@ -412,7 +412,7 @@ async function cerrarSesion() {
   document.getElementById("panelAdmin").classList.add("oculto");
   document.getElementById("accesoAdmin").classList.remove("oculto");
   document.getElementById("passwordAdmin").value = "";
-  document.getElementById("mensajeAdmin").textContent = "SesiÃ³n cerrada correctamente.";
+  document.getElementById("mensajeAdmin").textContent = "Sesión cerrada correctamente.";
   actualizarBoletoSeleccionado();
 }
 
