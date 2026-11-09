@@ -1,426 +1,524 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Administración | Rifas Valle del Carrizo</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administración - Rifas Valle del Carrizo</title>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-<style>
-* {
-  box-sizing: border-box;
-}
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f4f7;
+      margin: 0;
+      padding: 20px;
+      color: #222;
+    }
 
-body {
-  margin: 0;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  background: #f3f5f1;
-  color: #26352a;
-}
+    .contenedor {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px #0002;
+    }
 
-header {
-  background: #174b32;
-  color: white;
-  text-align: center;
-  padding: 22px;
-  border-radius: 12px;
-}
+    h1 {
+      text-align: center;
+      color: #176b35;
+    }
 
-main {
-  max-width: 950px;
-  margin: 25px auto;
-}
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
 
-.card {
-  background: white;
-  padding: 22px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px #0001;
-}
+    button {
+      padding: 11px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-input {
-  width: 100%;
-  padding: 13px;
-  margin: 8px 0 15px;
-  border: 1px solid #ccc;
-  border-radius: 7px;
-  font-size: 16px;
-}
+    .boton-verde {
+      background: #16833b;
+      color: white;
+    }
 
-button {
-  padding: 12px 20px;
-  background: #176b35;
-  color: white;
-  border: 0;
-  border-radius: 7px;
-  font-size: 15px;
-  cursor: pointer;
-  margin: 5px;
-}
+    .boton-rojo {
+      background: #c62828;
+      color: white;
+    }
 
-button:hover {
-  background: #104b28;
-}
+    .boton-gris {
+      background: #555;
+      color: white;
+    }
 
-#mensaje {
-  text-align: center;
-  margin: 15px;
-  font-weight: bold;
-}
+    #panel {
+      display: none;
+    }
 
-.resumen {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
+    .contadores {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 20px 0;
+    }
 
-.contador {
-  background: #f3f5f1;
-  padding: 18px;
-  border-radius: 9px;
-  text-align: center;
-  flex: 1;
-  min-width: 120px;
-}
+    .contador {
+      flex: 1;
+      min-width: 120px;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      background: #eee;
+    }
 
-.contador strong {
-  display: block;
-  font-size: 27px;
-}
+    .contador strong {
+      display: block;
+      font-size: 25px;
+    }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-  gap: 8px;
-}
+    .disponibles {
+      color: #16833b;
+    }
 
-.numero {
-  padding: 10px 3px;
-  text-align: center;
-  border-radius: 8px;
-  font-weight: bold;
-  background: #e5f5e9;
-  color: #176b35;
-}
+    .vendidos {
+      color: #c62828;
+    }
 
-.numero small {
-  display: block;
-  font-size: 10px;
-  margin-top: 5px;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+      gap: 8px;
+      margin-top: 20px;
+    }
 
-.numero.sold {
-  background: #fff0f0;
-  color: #c52222;
-}
+    .numero {
+      min-height: 55px;
+      background: #16833b;
+      color: white;
+      font-size: 15px;
+    }
 
-.oculto {
-  display: none;
-}
-</style>
+    .numero.vendido {
+      background: #c62828;
+    }
+
+    .numero.seleccionado {
+      outline: 4px solid #ffb300;
+      outline-offset: 2px;
+    }
+
+    .acciones {
+      margin: 20px 0;
+      padding: 15px;
+      background: #fff8e1;
+      border-radius: 8px;
+    }
+
+    #mensaje {
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    .oculto {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <h1>RIFAS VALLE DEL CARRIZO</h1>
-  <p>Panel privado de administración</p>
-</header>
+<div class="contenedor">
 
-<main>
+  <h1>Rifas Valle del Carrizo</h1>
+  <h2>Panel de Administración</h2>
 
-<section id="login" class="card">
+  <section id="login">
+    <h3>Acceso de administrador</h3>
 
-  <h2>Acceso de administrador</h2>
+    <input
+      type="email"
+      id="email"
+      value="valledelcarrizosinaloa@gmail.com"
+      placeholder="Correo electrónico"
+    >
 
-  <label>Correo electrónico</label>
+    <input
+      type="password"
+      id="password"
+      placeholder="Contraseña"
+    >
 
-  <input
-    id="correo"
-    type="email"
-    value="valledelcarrizosinaloa@gmail.com"
-    autocomplete="username"
-    placeholder="Correo electrónico">
-
-  <label>Contraseña</label>
-
-  <input
-    id="password"
-    type="password"
-    autocomplete="current-password"
-    placeholder="Escribe tu contraseña">
-
-  <button onclick="iniciarSesion()">
-    INICIAR SESIÓN
-  </button>
-
-  <p id="mensaje"></p>
-
-</section>
-
-<section id="panel" class="oculto">
-
-  <div class="card">
-
-    <h2>Bienvenido, administrador</h2>
-
-    <p>Sesión privada autorizada.</p>
-
-    <button onclick="cargarNumeros()">
-      ACTUALIZAR NÚMEROS
+    <button class="boton-verde" onclick="iniciarSesion()">
+      Entrar
     </button>
 
-    <button onclick="cerrarSesion()">
-      CERRAR SESIÓN
+    <p id="mensajeLogin"></p>
+  </section>
+
+  <section id="panel">
+
+    <p>Bienvenido al panel de administración.</p>
+
+    <button class="boton-verde" onclick="cargarNumeros()">
+      Actualizar boletos
     </button>
 
-  </div>
+    <button class="boton-gris" onclick="cerrarSesion()">
+      Cerrar sesión
+    </button>
 
-  <div class="card">
-
-    <h2>Estado de la rifa</h2>
-
-    <div class="resumen">
+    <div class="contadores">
 
       <div class="contador">
-        <strong id="total">0</strong>
-        Números
+        <strong id="total">110</strong>
+        Total de boletos
       </div>
 
       <div class="contador">
-        <strong id="libres">0</strong>
+        <strong id="disponibles" class="disponibles">0</strong>
         Disponibles
       </div>
 
       <div class="contador">
-        <strong id="ocupados">0</strong>
+        <strong id="vendidos" class="vendidos">0</strong>
         Vendidos
       </div>
 
     </div>
 
-    <p id="estado" style="text-align:center">
-      Consultando números...
-    </p>
+    <div class="acciones">
 
-  </div>
+      <h3>Cancelar una venta</h3>
 
-  <div class="card">
+      <p>
+        Selecciona un boleto vendido para devolverlo a disponible.
+      </p>
 
-    <h2>Listado de boletos</h2>
+      <p id="seleccion">
+        Ningún boleto seleccionado.
+      </p>
 
-    <div class="grid" id="numeros"></div>
+      <button
+        id="botonCancelar"
+        class="boton-rojo"
+        onclick="cancelarVenta()"
+        disabled
+      >
+        Cancelar venta y liberar boleto
+      </button>
 
-  </div>
+      <p id="mensaje"></p>
 
-</section>
+    </div>
 
-</main>
+    <h3>Estado de los boletos</h3>
+
+    <div id="numeros" class="grid"></div>
+
+  </section>
+
+</div>
 
 <script>
-
-const SUPABASE_URL =
-"https://kptejintrxbepdueoryd.supabase.co";
+const SUPABASE_URL = "https://kptejintrxbepdueoryd.supabase.co";
 
 const SUPABASE_KEY =
 "sb_publishable_5hkytZdrjhkHUFkqC0u22A_Pjr68fOo";
 
-let supabase = null;
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-if (
-  window.supabase &&
-  typeof window.supabase.createClient === "function"
-) {
-  supabase = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-} else {
-  document.getElementById("mensaje").textContent =
-    "ERROR: No se pudo cargar la conexión con Supabase.";
-}
+const RAFFLE_SLUG = "primera-rifa-1000";
+
+let usuarioAdministrador = null;
+let boletoSeleccionado = null;
+let boletosAdmin = [];
 
 async function iniciarSesion() {
 
-  const mensaje = document.getElementById("mensaje");
-  const boton = document.querySelector("#login button");
-
-  const correo = document.getElementById("correo").value.trim();
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
-  if (!correo || !password) {
-    mensaje.textContent = "Escribe tu correo y contraseña.";
+  const mensaje = document.getElementById("mensajeLogin");
+  mensaje.textContent = "Verificando acceso...";
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    mensaje.textContent = "Error de acceso: " + error.message;
     return;
   }
 
-  boton.disabled = true;
-  boton.textContent = "CONECTANDO...";
-  mensaje.textContent = "Conectando con Supabase...";
+  const autorizado = await verificarAdministrador();
 
-  try {
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: correo,
-      password: password
-    });
-
-    if (error) throw error;
-
-    if (!data.user) {
-      throw new Error("No se recibió información del usuario.");
-    }
-
-    mensaje.textContent = "Acceso confirmado. Verificando permisos...";
-
-    await verificarAdministrador(data.user);
-
-  } catch (error) {
-
-    mensaje.textContent = "Error: " + error.message;
-
-  } finally {
-
-    boton.disabled = false;
-    boton.textContent = "INICIAR SESIÓN";
-
+  if (!autorizado) {
+    await supabaseClient.auth.signOut();
+    mensaje.textContent = "No tienes permisos de administrador.";
+    return;
   }
+
+  document.getElementById("login").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+
+  await cargarNumeros();
 }
 
-async function verificarAdministrador(usuario) {
+async function verificarAdministrador() {
 
-  const mensaje = document.getElementById("mensaje");
+  const { data: { user }, error: errorSesion } =
+    await supabaseClient.auth.getUser();
 
-  try {
-
-    const { data: perfil, error } = await supabase
-      .from("profiles")
-      .select("role, active")
-      .eq("id", usuario.id)
-      .single();
-
-    if (error) throw error;
-
-    if (!perfil || perfil.role !== "admin" || perfil.active !== true) {
-      throw new Error("El usuario no tiene permisos de administrador.");
-    }
-
-    document.getElementById("login").classList.add("oculto");
-    document.getElementById("panel").classList.remove("oculto");
-
-    await cargarNumeros();
-
-  } catch (error) {
-
-    mensaje.textContent = "Error al verificar administrador: " + error.message;
-    await supabase.auth.signOut();
-
+  if (errorSesion || !user) {
+    usuarioAdministrador = null;
+    return false;
   }
-}
 
+  const { data, error } = await supabaseClient
+    .from("profiles")
+    .select("role, active")
+    .eq("id", user.id)
+    .single();
+
+  if (error || !data || data.role !== "admin" || data.active !== true) {
+    usuarioAdministrador = null;
+    return false;
+  }
+
+  usuarioAdministrador = user;
+  return true;
+}
 
 async function cargarNumeros() {
 
-  const estado =
-    document.getElementById("estado");
+  const autorizado = await verificarAdministrador();
 
-  const contenedor =
-    document.getElementById("numeros");
+  if (!autorizado) {
+    alert("Tu sesión no está autorizada. Inicia sesión nuevamente.");
+    await cerrarSesion();
+    return;
+  }
 
-  estado.textContent = "Actualizando números...";
+  const contenedor = document.getElementById("numeros");
+  const mensaje = document.getElementById("mensaje");
 
-  try {
+  contenedor.innerHTML = "Cargando boletos...";
+  mensaje.textContent = "";
 
-    const { data, error } = await supabase
-      .from("public_ticket_board_public")
-      .select("raffle_slug,raffle_name,ticket_code,ticket_status")
-      .eq("raffle_slug", "primera-rifa-1000")
-      .order("ticket_code", { ascending: true });
+  boletoSeleccionado = null;
+  actualizarSeleccion();
 
-    if (error) throw error;
+  const { data: rifa, error: errorRifa } = await supabaseClient
+    .from("raffles")
+    .select("id")
+    .eq("slug", RAFFLE_SLUG)
+    .single();
 
-    if (!data || data.length === 0) {
-      throw new Error("No se encontraron números.");
+  if (errorRifa || !rifa) {
+    contenedor.innerHTML = "No se pudo encontrar la rifa.";
+    mensaje.textContent = errorRifa?.message || "";
+    return;
+  }
+
+  const { data: boletos, error } = await supabaseClient
+    .from("tickets")
+    .select("id, raffle_id, ticket_number, status")
+    .eq("raffle_id", rifa.id)
+    .order("ticket_number", { ascending: true });
+
+  if (error) {
+    contenedor.innerHTML = "Error al cargar boletos.";
+    mensaje.textContent = error.message;
+    return;
+  }
+
+  boletosAdmin = boletos || [];
+
+  contenedor.innerHTML = "";
+
+  let disponibles = 0;
+  let vendidos = 0;
+
+  boletosAdmin.forEach(boleto => {
+
+    const numero = String(boleto.ticket_number).padStart(3, "0");
+
+    const boton = document.createElement("button");
+
+    boton.className = "numero";
+
+    if (boleto.status === "sold") {
+      boton.classList.add("vendido");
+      boton.textContent = numero + "\nVENDIDO";
+      vendidos++;
+
+      boton.onclick = () => seleccionarBoleto(boleto.id);
+
+    } else {
+      boton.textContent = numero + "\nLIBRE";
+      disponibles++;
     }
 
-    contenedor.innerHTML = "";
+    boton.dataset.id = boleto.id;
 
-    let vendidos = 0;
+    contenedor.appendChild(boton);
 
-    data.forEach(item => {
+  });
 
-      const estaVendido =
-        String(item.ticket_status).toLowerCase() === "sold";
+  document.getElementById("total").textContent = boletosAdmin.length;
+  document.getElementById("disponibles").textContent = disponibles;
+  document.getElementById("vendidos").textContent = vendidos;
+}
 
-      if (estaVendido) vendidos++;
+function seleccionarBoleto(id) {
 
-      const tarjeta =
-        document.createElement("div");
+  boletoSeleccionado = boletosAdmin.find(
+    boleto => boleto.id === id
+  );
 
-      tarjeta.className =
-        "numero" + (estaVendido ? " sold" : "");
+  document.querySelectorAll(".numero").forEach(boton => {
+    boton.classList.remove("seleccionado");
+  });
 
-      const numero =
-        document.createElement("div");
+  const boton = document.querySelector(
+    '.numero[data-id="' + id + '"]'
+  );
 
-      numero.textContent = item.ticket_code;
-
-      const etiqueta =
-        document.createElement("small");
-
-      etiqueta.textContent =
-        estaVendido ? "VENDIDO" : "DISPONIBLE";
-
-      tarjeta.appendChild(numero);
-      tarjeta.appendChild(etiqueta);
-
-      contenedor.appendChild(tarjeta);
-
-    });
-
-    document.getElementById("total").textContent =
-      data.length;
-
-    document.getElementById("ocupados").textContent =
-      vendidos;
-
-    document.getElementById("libres").textContent =
-      data.length - vendidos;
-
-    estado.textContent =
-      "Números actualizados correctamente.";
-
-  } catch (error) {
-
-    estado.textContent =
-      "Error: " + error.message;
-
+  if (boton) {
+    boton.classList.add("seleccionado");
   }
+
+  actualizarSeleccion();
+}
+
+function actualizarSeleccion() {
+
+  const texto = document.getElementById("seleccion");
+  const botonCancelar = document.getElementById("botonCancelar");
+
+  if (!boletoSeleccionado) {
+    texto.textContent = "Ningún boleto seleccionado.";
+    botonCancelar.disabled = true;
+    return;
+  }
+
+  const numero = String(
+    boletoSeleccionado.ticket_number
+  ).padStart(3, "0");
+
+  texto.textContent = "Boleto seleccionado: " + numero;
+  botonCancelar.disabled = false;
+}
+
+async function cancelarVenta() {
+
+  if (!boletoSeleccionado) {
+    alert("Primero selecciona un boleto vendido.");
+    return;
+  }
+
+  const autorizado = await verificarAdministrador();
+
+  if (!autorizado) {
+    alert("Tu sesión ya no está autorizada.");
+    await cerrarSesion();
+    return;
+  }
+
+  const numero = String(
+    boletoSeleccionado.ticket_number
+  ).padStart(3, "0");
+
+  const confirmar = confirm(
+    "¿Confirmas cancelar la venta del boleto " +
+    numero +
+    " y devolverlo a DISPONIBLE?"
+  );
+
+  if (!confirmar) return;
+
+  const mensaje = document.getElementById("mensaje");
+
+  mensaje.textContent = "Procesando cancelación...";
+
+  const id = boletoSeleccionado.id;
+
+  const { data, error } = await supabaseClient
+    .from("tickets")
+    .update({ status: "available" })
+    .eq("id", id)
+    .eq("status", "sold")
+    .select("id");
+
+  if (error) {
+    mensaje.textContent = "No se pudo cancelar: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    mensaje.textContent =
+      "El boleto ya no está vendido. Actualiza la lista.";
+    boletoSeleccionado = null;
+    actualizarSeleccion();
+    return;
+  }
+
+  boletoSeleccionado = null;
+
+  mensaje.textContent =
+    "El boleto " + numero + " ahora está DISPONIBLE.";
+
+  await cargarNumeros();
 }
 
 async function cerrarSesion() {
 
-  await supabase.auth.signOut();
+  await supabaseClient.auth.signOut();
 
-  window.location.reload();
+  usuarioAdministrador = null;
+  boletoSeleccionado = null;
+  boletosAdmin = [];
 
+  document.getElementById("panel").style.display = "none";
+  document.getElementById("login").style.display = "block";
+
+  document.getElementById("password").value = "";
 }
 
 async function revisarSesion() {
 
-  const { data } = await supabase.auth.getSession();
+  const { data: { session } } =
+    await supabaseClient.auth.getSession();
 
-  if (data.session) {
-    await verificarAdministrador(data.session.user);
+  if (!session) return;
+
+  const autorizado = await verificarAdministrador();
+
+  if (autorizado) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("panel").style.display = "block";
+    await cargarNumeros();
+  } else {
+    await supabaseClient.auth.signOut();
   }
-
 }
 
 revisarSesion();
-
 </script>
 
 </body>
