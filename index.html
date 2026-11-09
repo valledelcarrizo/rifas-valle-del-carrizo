@@ -1,11 +1,16 @@
+html
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rifas Valle del Carrizo</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   padding: 20px;
@@ -13,6 +18,7 @@ body {
   background: #f3f5f1;
   color: #26352a;
 }
+
 header {
   text-align: center;
   background: #174b32;
@@ -20,9 +26,11 @@ header {
   padding: 28px 15px;
   border-radius: 14px;
 }
+
 h1 { margin: 0 0 10px; font-size: 27px; }
 header p { margin: 5px; }
 main { max-width: 1000px; margin: 25px auto; }
+
 .resumen {
   display: flex;
   justify-content: center;
@@ -30,6 +38,7 @@ main { max-width: 1000px; margin: 25px auto; }
   flex-wrap: wrap;
   margin: 20px 0;
 }
+
 .contador {
   background: white;
   padding: 14px 22px;
@@ -37,15 +46,26 @@ main { max-width: 1000px; margin: 25px auto; }
   text-align: center;
   box-shadow: 0 2px 8px #0001;
 }
-.contador strong { display: block; font-size: 25px; }
+
+.contador strong {
+  display: block;
+  font-size: 25px;
+}
+
 .disponible { color: #168044; }
 .vendido { color: #d32626; }
-#estado { text-align: center; margin: 15px; }
+
+#estado {
+  text-align: center;
+  margin: 15px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
   gap: 9px;
 }
+
 .numero {
   background: white;
   border: 1px solid #dce3dc;
@@ -55,19 +75,21 @@ main { max-width: 1000px; margin: 25px auto; }
   font-weight: bold;
   font-size: 17px;
 }
+
 .numero small {
   display: block;
   font-size: 10px;
   margin-top: 5px;
 }
+
 .numero.sold {
   background: #fff0f0;
   color: #c52222;
   border-color: #e9b1b1;
 }
-.numero.available {
-  color: #168044;
-}
+
+.numero.available { color: #168044; }
+
 #actualizar {
   display: block;
   margin: 20px auto;
@@ -79,34 +101,117 @@ main { max-width: 1000px; margin: 25px auto; }
   font-size: 15px;
   cursor: pointer;
 }
+
 footer {
   text-align: center;
   margin-top: 30px;
   color: #68736a;
   font-size: 13px;
 }
+
+.seccion-pago {
+  background: #fff;
+  padding: 25px;
+  margin: 25px auto;
+  max-width: 600px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 3px 12px #ccc;
+}
+
+.boton-copiar {
+  background: #287a45;
+  color: white;
+  padding: 14px 25px;
+  border: 0;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.imagen-seccion {
+  text-align: center;
+  padding: 25px 10px;
+}
+
+.imagen-seccion img {
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  border-radius: 14px;
+}
+
+.admin-acceso {
+  max-width: 450px;
+  margin: 35px auto 20px;
+  padding: 25px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+}
+
+.admin-acceso h2,
+.admin-panel h2 {
+  text-align: center;
+}
+
+.admin-acceso label {
+  display: block;
+  margin-top: 12px;
+}
+
+.admin-acceso input {
+  width: 100%;
+  padding: 13px;
+  margin-top: 7px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  font-size: 16px;
+}
+
+.admin-acceso button,
+.admin-panel button {
+  padding: 12px 20px;
+  background: #176b35;
+  color: white;
+  border: 0;
+  border-radius: 7px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.admin-acceso button {
+  width: 100%;
+}
+
+#mensajeAdmin {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.admin-panel {
+  max-width: 950px;
+  margin: 25px auto;
+}
+
+.admin-card {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px #0001;
+}
+
+.oculto {
+  display: none !important;
+}
 </style>
 </head>
+
 <body>
 
-  
-  <!-- ACCESO A ADMINISTRACIÓN -->
-<div style="text-align:center; padding:15px;">
-  <button
-    onclick="window.location.href='admin.html'"
-    style="
-      background:#176b35;
-      color:white;
-      border:none;
-      padding:12px 28px;
-      border-radius:8px;
-      font-size:18px;
-      font-weight:bold;
-      cursor:pointer;
-    ">
-    ¡Bienvenidos!
-  </button>
-</div>
 <header>
   <h1>RIFAS VALLE DEL CARRIZO</h1>
   <p>Consulta los números de nuestra rifa</p>
@@ -114,15 +219,18 @@ footer {
 </header>
 
 <main>
+
   <div class="resumen">
     <div class="contador">
       <strong id="total">110</strong>
       Números
     </div>
+
     <div class="contador disponible">
       <strong id="libres">—</strong>
       Disponibles
     </div>
+
     <div class="contador vendido">
       <strong id="ocupados">—</strong>
       Vendidos
@@ -130,28 +238,201 @@ footer {
   </div>
 
   <p id="estado">Consultando números...</p>
+
   <div class="grid" id="numeros"></div>
 
   <button id="actualizar" onclick="cargarNumeros()">
     Actualizar números
   </button>
+
 </main>
 
 <footer>
   Rifas Valle del Carrizo · Información actualizada desde nuestra base de datos
 </footer>
 
+<!-- FORMAS DE PAGO -->
+
+<section class="seccion-pago">
+
+  <h2>FORMAS DE PAGO</h2>
+
+  <h3 style="color:#287a45;">$20 MXN por boleto</h3>
+
+  <p><strong>BanCoppel</strong></p>
+  <p>Titular: Miriam Arely Torres</p>
+
+  <p style="font-size:20px;font-weight:bold;">
+    4169160642443163
+  </p>
+
+  <button class="boton-copiar"
+    onclick="copiarTarjeta()">
+    COPIAR NÚMERO DE TARJETA
+  </button>
+
+  <hr>
+
+  <h3>IMPORTANTE</h3>
+
+  <p>¡Gracias por su apoyo!</p>
+  <p>Los boletos se reservan al verificar el pago.</p>
+  <p>Después de hacer su pago, comuníquese por WhatsApp con Miriam Arely: 668 233 8761.</p>
+
+</section>
+
+<section class="imagen-seccion">
+  <img
+    src="pagos-miriam.jpg"
+    alt="Formas de pago - Rifa Valle del Carrizo">
+</section>
+
+<section class="imagen-seccion">
+  <img
+    src="logopublicidad2.jpg"
+    alt="Logo del Grupo de WhatsApp del Valle del Carrizo"
+    style="width:50%;max-width:400px;">
+</section>
+
+<!-- ACCESO DE ADMINISTRADOR -->
+
+<section id="accesoAdmin" class="admin-acceso">
+
+  <h2>Administración</h2>
+
+  <label for="correoAdmin">Correo electrónico</label>
+
+  <input
+    id="correoAdmin"
+    type="email"
+    value="valledelcarrizosinaloa@gmail.com"
+    autocomplete="username"
+    placeholder="Correo electrónico">
+
+  <label for="passwordAdmin">Contraseña</label>
+
+  <input
+    id="passwordAdmin"
+    type="password"
+    autocomplete="current-password"
+    placeholder="Escribe tu contraseña">
+
+  <button id="botonLogin" onclick="iniciarSesion()">
+    INICIAR SESIÓN
+  </button>
+
+  <p id="mensajeAdmin"></p>
+
+</section>
+
+<!-- PANEL PRIVADO -->
+
+<section id="panelAdmin" class="admin-panel oculto">
+
+  <div class="admin-card">
+
+    <h2>Panel de administración</h2>
+
+    <p style="text-align:center;">
+      Sesión de administrador autorizada.
+    </p>
+
+    <button onclick="cargarNumerosAdmin()">
+      ACTUALIZAR NÚMEROS
+    </button>
+
+    <button onclick="cerrarSesion()">
+      CERRAR SESIÓN
+    </button>
+
+  </div>
+
+  <div class="admin-card">
+
+    <h2>Estado de la rifa</h2>
+
+    <div class="resumen">
+
+      <div class="contador">
+        <strong id="adminTotal">0</strong>
+        Números
+      </div>
+
+      <div class="contador disponible">
+        <strong id="adminLibres">0</strong>
+        Disponibles
+      </div>
+
+      <div class="contador vendido">
+        <strong id="adminOcupados">0</strong>
+        Vendidos
+      </div>
+
+    </div>
+
+    <p id="estadoAdmin" style="text-align:center;">
+      Consultando números...
+    </p>
+
+  </div>
+
+  <div class="admin-card">
+
+    <h2>Listado de boletos</h2>
+
+    <div class="grid" id="numerosAdmin"></div>
+
+  </div>
+
+</section>
+
 <script>
-const SUPABASE_URL = "https://kptejintrxbepdueoryd.supabase.co";
-const SUPABASE_KEY = "sb_publishable_5hkytZdrjhkHUFkqC0u22A_Pjr68fOo";
+
+const SUPABASE_URL =
+"https://kptejintrxbepdueoryd.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_5hkytZdrjhkHUFkqC0u22A_Pjr68fOo";
+
+let supabaseClient = null;
+
+if (
+  window.supabase &&
+  typeof window.supabase.createClient === "function"
+) {
+  supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+} else {
+  document.getElementById("mensajeAdmin").textContent =
+    "No se pudo cargar la conexión de administración.";
+}
+
+// COPIAR DATOS BANCARIOS
+
+async function copiarTarjeta() {
+  const tarjeta = "4169160642443163";
+
+  try {
+    await navigator.clipboard.writeText(tarjeta);
+    alert("Número de tarjeta copiado.");
+  } catch (error) {
+    alert("No se pudo copiar automáticamente. Puede seleccionar el número y copiarlo.");
+  }
+}
+
+// CARGAR NÚMEROS PÚBLICOS
 
 async function cargarNumeros() {
+
   const estado = document.getElementById("estado");
   const contenedor = document.getElementById("numeros");
 
   estado.textContent = "Actualizando números...";
 
   try {
+
     const url = SUPABASE_URL +
       "/rest/v1/public_ticket_board_public" +
       "?select=raffle_slug,raffle_name,ticket_code,ticket_status" +
@@ -180,12 +461,14 @@ async function cargarNumeros() {
     let vendidos = 0;
 
     datos.forEach(item => {
+
       const estaVendido =
         String(item.ticket_status).toLowerCase() === "sold";
 
       if (estaVendido) vendidos++;
 
       const tarjeta = document.createElement("div");
+
       tarjeta.className = "numero " +
         (estaVendido ? "sold" : "available");
 
@@ -194,10 +477,12 @@ async function cargarNumeros() {
       tarjeta.appendChild(numero);
 
       const etiqueta = document.createElement("small");
-      etiqueta.textContent = estaVendido ? "✕ VENDIDO" : "DISPONIBLE";
-      tarjeta.appendChild(etiqueta);
+      etiqueta.textContent =
+        estaVendido ? "✕ VENDIDO" : "DISPONIBLE";
 
+      tarjeta.appendChild(etiqueta);
       contenedor.appendChild(tarjeta);
+
     });
 
     document.getElementById("total").textContent = datos.length;
@@ -208,60 +493,207 @@ async function cargarNumeros() {
     estado.textContent = "Números actualizados correctamente.";
 
   } catch (error) {
+
     estado.textContent = error.message;
+
   }
 }
 
+// INICIAR SESIÓN
+
+async function iniciarSesion() {
+
+  const mensaje = document.getElementById("mensajeAdmin");
+  const boton = document.getElementById("botonLogin");
+
+  const correo =
+    document.getElementById("correoAdmin").value.trim();
+
+  const password =
+    document.getElementById("passwordAdmin").value;
+
+  if (!correo || !password) {
+    mensaje.textContent = "Escribe tu correo y contraseña.";
+    return;
+  }
+
+  if (!supabaseClient) {
+    mensaje.textContent = "Error: no se pudo conectar con Supabase.";
+    return;
+  }
+
+  boton.disabled = true;
+  boton.textContent = "CONECTANDO...";
+  mensaje.textContent = "Verificando acceso...";
+
+  try {
+
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email: correo,
+        password: password
+      });
+
+    if (error) throw error;
+
+    if (!data.user) {
+      throw new Error("No se recibió información del usuario.");
+    }
+
+    await verificarAdministrador(data.user);
+
+  } catch (error) {
+
+    mensaje.textContent = "Error: " + error.message;
+
+  } finally {
+
+    boton.disabled = false;
+    boton.textContent = "INICIAR SESIÓN";
+
+  }
+}
+
+// VERIFICAR PERMISOS
+
+async function verificarAdministrador(usuario) {
+
+  const mensaje = document.getElementById("mensajeAdmin");
+
+  try {
+
+    const { data: perfil, error } = await supabaseClient
+      .from("profiles")
+      .select("role, active")
+      .eq("id", usuario.id)
+      .single();
+
+    if (error) throw error;
+
+    if (
+      !perfil ||
+      perfil.role !== "admin" ||
+      perfil.active !== true
+    ) {
+      throw new Error(
+        "El usuario no tiene permisos de administrador."
+      );
+    }
+
+    document.getElementById("accesoAdmin")
+      .classList.add("oculto");
+
+    document.getElementById("panelAdmin")
+      .classList.remove("oculto");
+
+    mensaje.textContent = "";
+
+    await cargarNumerosAdmin();
+
+  } catch (error) {
+
+    mensaje.textContent =
+      "Error al verificar administrador: " + error.message;
+
+    await supabaseClient.auth.signOut();
+
+  }
+}
+
+// CARGAR NÚMEROS EN EL PANEL PRIVADO
+
+async function cargarNumerosAdmin() {
+
+  const estado = document.getElementById("estadoAdmin");
+  const contenedor = document.getElementById("numerosAdmin");
+
+  estado.textContent = "Actualizando números...";
+
+  try {
+
+    const { data, error } = await supabaseClient
+      .from("public_ticket_board_public")
+      .select("raffle_slug,raffle_name,ticket_code,ticket_status")
+      .eq("raffle_slug", "primera-rifa-1000")
+      .order("ticket_code", { ascending: true });
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      throw new Error("No se encontraron números.");
+    }
+
+    contenedor.innerHTML = "";
+
+    let vendidos = 0;
+
+    data.forEach(item => {
+
+      const estaVendido =
+        String(item.ticket_status).toLowerCase() === "sold";
+
+      if (estaVendido) vendidos++;
+
+      const tarjeta = document.createElement("div");
+
+      tarjeta.className =
+        "numero " + (estaVendido ? "sold" : "available");
+
+      const numero = document.createElement("div");
+      numero.textContent = item.ticket_code;
+
+      const etiqueta = document.createElement("small");
+      etiqueta.textContent =
+        estaVendido ? "✕ VENDIDO" : "DISPONIBLE";
+
+      tarjeta.appendChild(numero);
+      tarjeta.appendChild(etiqueta);
+      contenedor.appendChild(tarjeta);
+
+    });
+
+    document.getElementById("adminTotal").textContent = data.length;
+    document.getElementById("adminOcupados").textContent = vendidos;
+    document.getElementById("adminLibres").textContent =
+      data.length - vendidos;
+
+    estado.textContent = "Números actualizados correctamente.";
+
+  } catch (error) {
+
+    estado.textContent = "Error: " + error.message;
+
+  }
+}
+
+// CERRAR SESIÓN
+
+async function cerrarSesion() {
+
+  if (!supabaseClient) return;
+
+  await supabaseClient.auth.signOut();
+
+  document.getElementById("panelAdmin")
+    .classList.add("oculto");
+
+  document.getElementById("accesoAdmin")
+    .classList.remove("oculto");
+
+  document.getElementById("passwordAdmin").value = "";
+
+  document.getElementById("mensajeAdmin").textContent =
+    "Sesión cerrada correctamente.";
+
+}
+
+// INICIAR CARGA PÚBLICA
+
 cargarNumeros();
+
 setInterval(cargarNumeros, 30000);
+
 </script>
-  <section style="background:#fff;padding:25px;margin:25px auto;
-max-width:600px;border-radius:15px;text-align:center;
-box-shadow:0 3px 12px #ccc;">
 
-<h2>FORMAS DE PAGO</h2>
-<h3 style="color:#287a45;">$20 MXN por boleto</h3>
-
-<p><strong>BanCoppel</strong></p>
-<p>Titular: Miriam Arely Torres</p>
-
-<p style="font-size:20px;font-weight:bold;">
-4169160642443163
-</p>
-
-<button onclick="navigator.clipboard.writeText('4169160642443163').then(()=>alert('Número copiado'))"
-style="background:#287a45;color:white;padding:14px 25px;
-border:0;border-radius:8px;font-weight:bold;">
-COPIAR NÚMERO DE TARJETA
-</button>
-
-<hr>
-
-<h3>IMPORTANTE</h3>
-
-<p>Gracias por su apoyo!.</p>
-<p>Los boletos se reservan al verificar el pago.</p>
-<p>Ya que haga su pago mande whatsapp a Miriam Arely 668 233 8761.</p>
-</section>
-
-  <section style="text-align:center; padding:25px 10px;">
-  <img
-    src="pagos-miriam.jpg"
-    alt="Formas de pago - Rifa Valle del Carrizo"
-    style="width:100%; max-width:700px; height:auto;
-    border-radius:14px;"
-  >
-</section>
-
-
-  <section style="text-align:center; padding:25px 10px;">
-  <img
-    src="logopublicidad2.jpg"
-    alt="Logo del Grupo de Whatsapp del Valle del Carrizo"
-    style="width:50%; max-width:400px; height:auto;
-    border-radius:14px;"
-  >
-</section>
-  
 </body>
 </html>
