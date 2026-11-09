@@ -243,6 +243,7 @@ COPIAR NÚMERO DE TARJETA
   width:166.5px;
   max-width:50vw;
   z-index:9999;
+  display:none;
 ">
   <img
     src="logopublicidad2.jpg"
@@ -251,6 +252,17 @@ COPIAR NÚMERO DE TARJETA
     onclick="document.getElementById('adminPopup').style.display='block'"
   >
 </div>
+
+<script>
+window.addEventListener("scroll", function () {
+  const logo = document.getElementById("logoPublicidad");
+  const llegoAlFinal =
+    window.innerHeight + window.scrollY >=
+    document.documentElement.scrollHeight - 20;
+
+  logo.style.display = llegoAlFinal ? "block" : "none";
+});
+</script>
 
   
 
