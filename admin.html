@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -238,63 +237,80 @@ const supabase = window.supabase.createClient(
 async function iniciarSesion() {
 
   const mensaje = document.getElementById("mensaje");
+  const boton = document.querySelector("#login button");
 
-  const correo =
-    document.getElementById("correo").value.trim();
+  const correo = document.getElementById("correo").value.trim();
+  const password = document.getElementById("password").value;
 
-  const password =
-    document.getElementById("password").value;
+  if (!correo || !password) {
+    mensaje.textContent = "Escribe tu correo y contraseña.";
+    return;
+  }
 
-  mensaje.textContent = "Verificando acceso...";
+  boton.disabled = true;
+  boton.textContent = "CONECTANDO...";
+  mensaje.textContent = "Conectando con Supabase...";
 
-  const { data, error } =
-    await supabase.auth.signInWithPassword({
+  try {
+
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: correo,
       password: password
     });
 
-  if (error) {
-    mensaje.textContent =
-      "Error de acceso: " + error.message;
-    return;
-  }
+    if (error) throw error;
 
-  await verificarAdministrador(data.user);
+    if (!data.user) {
+      throw new Error("No se recibió información del usuario.");
+    }
+
+    mensaje.textContent = "Acceso confirmado. Verificando permisos...";
+
+    await verificarAdministrador(data.user);
+
+  } catch (error) {
+
+    mensaje.textContent = "Error: " + error.message;
+
+  } finally {
+
+    boton.disabled = false;
+    boton.textContent = "INICIAR SESIÓN";
+
+  }
 }
 
 async function verificarAdministrador(usuario) {
 
   const mensaje = document.getElementById("mensaje");
 
-  const { data: perfil, error } = await supabase
-    .from("profiles")
-    .select("role, active")
-    .eq("id", usuario.id)
-    .single();
+  try {
 
-  if (
-    error ||
-    !perfil ||
-    perfil.role !== "admin" ||
-    perfil.active !== true
-  ) {
+    const { data: perfil, error } = await supabase
+      .from("profiles")
+      .select("role, active")
+      .eq("id", usuario.id)
+      .single();
 
-    mensaje.textContent =
-      "Acceso denegado. No tienes permisos de administrador.";
+    if (error) throw error;
 
+    if (!perfil || perfil.role !== "admin" || perfil.active !== true) {
+      throw new Error("El usuario no tiene permisos de administrador.");
+    }
+
+    document.getElementById("login").classList.add("oculto");
+    document.getElementById("panel").classList.remove("oculto");
+
+    await cargarNumeros();
+
+  } catch (error) {
+
+    mensaje.textContent = "Error al verificar administrador: " + error.message;
     await supabase.auth.signOut();
 
-    return;
   }
-
-  document.getElementById("login")
-    .classList.add("oculto");
-
-  document.getElementById("panel")
-    .classList.remove("oculto");
-
-  cargarNumeros();
 }
+
 
 async function cargarNumeros() {
 
