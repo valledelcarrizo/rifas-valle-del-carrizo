@@ -35,6 +35,7 @@ footer{text-align:center;margin-top:30px;color:#68736a;font-size:13px}
 .admin-card{background:white;padding:22px;border-radius:12px;margin-bottom:20px;box-shadow:0 2px 8px #0001}
 .oculto{display:none!important}
 .numero.seleccionado{outline:3px solid #e5a000;background:#fff8df}
+.numero.cancelar-seleccionado{outline:3px solid #c52222;background:#fff0f0}
 .ayuda{font-size:14px;color:#59665c;text-align:center}
 .venta-form{max-width:600px;margin:0 auto}
 .venta-form button{width:100%}
@@ -128,7 +129,20 @@ button:disabled{opacity:.55;cursor:not-allowed}
       <p id="mensajeVenta" role="status"></p>
     </form>
   </div>
-
+<div class="admin-card">
+  <h2>Cancelar una venta</h2>
+  <p class="ayuda">Selecciona un boleto rojo vendido en el listado.</p>
+  <p style="text-align:center;">
+    Boleto seleccionado para cancelar:
+    <strong id="boletoCancelarSeleccionado">Ninguno</strong>
+  </p>
+  <button id="botonCancelar" type="button"
+    onclick="cancelarVenta()" disabled
+    style="display:block;width:100%;background:#a52b2b;">
+    CANCELAR VENTA Y LIBERAR BOLETO
+  </button>
+  <p id="mensajeCancelacion" role="status" style="text-align:center;"></p>
+</div>
   <div class="admin-card">
     <h2>Listado de boletos</h2>
     <p class="ayuda">Verde: disponible y seleccionable. Rojo: vendido.</p>
@@ -144,6 +158,7 @@ const RAFFLE_SLUG = "primera-rifa-1000";
 let supabaseClient = null;
 let usuarioAdministrador = null;
 let boletoElegido = null;
+let boletoCancelar = null;
 let raffleIdActual = null;
 let boletosAdmin = [];
 
@@ -278,16 +293,19 @@ async function cargarNumerosAdmin() {
       tarjeta.className = "numero " + (estaVendido ? "sold" : "available");
       tarjeta.style.margin = "0";
       tarjeta.style.width = "100%";
-      tarjeta.disabled = estadoTicket !== "available";
+      tarjeta.disabled = estadoTicket === "reserved" ||
+  (estadoTicket !== "available" && estadoTicket !== "sold");
       const numero = document.createElement("div");
       numero.textContent = String(ticket.ticket_number).padStart(3, "0");
       const etiqueta = document.createElement("small");
       etiqueta.textContent = estaVendido ? "✕ VENDIDO" :
         (estadoTicket === "reserved" ? "RESERVADO" : "DISPONIBLE");
       tarjeta.append(numero, etiqueta);
-      if (estadoTicket === "available") {
-        tarjeta.addEventListener("click", () => seleccionarBoleto(ticket.id));
-      }
+  if (estadoTicket === "available") {
+  tarjeta.addEventListener("click", () => seleccionarBoleto(ticket.id));
+} else if (estadoTicket === "sold") {
+  tarjeta.addEventListener("click", () => seleccionarParaCancelar(ticket.id));
+}
       if (boletoElegido && boletoElegido.id === ticket.id) tarjeta.classList.add("seleccionado");
       contenedor.appendChild(tarjeta);
     });
@@ -324,7 +342,112 @@ function actualizarBoletoSeleccionado() {
     boletoElegido ? String(boletoElegido.ticket_number).padStart(3, "0") : "Ninguno";
   document.getElementById("botonRegistrar").disabled = !boletoElegido;
 }
+function seleccionarParaCancelar(ticketId) {
+  const ticket = boletosAdmin.find(t => t.id === ticketId);
+  if (!ticket || String(ticket.status).toLowerCase() !== "sold") return;
 
+  boletoElegido = null;
+  actualizarBoletoSeleccionado();
+
+  boletoCancelar = ticket;
+  actualizarBoletoCancelar();
+
+  document.querySelectorAll("#numerosAdmin button").forEach(b => {
+    b.classList.remove("seleccionado", "cancelar-seleccionado");
+  });
+
+  const botones = Array.from(document.querySelectorAll("#numerosAdmin button"));
+  const boton = botones.find(b =>
+    b.querySelector("div")?.textContent === String(ticket.ticket_number).padStart(3, "0")
+  );
+
+  if (boton) boton.classList.add("cancelar-seleccionado");
+}
+
+function actualizarBoletoCancelar() {
+  document.getElementById("boletoCancelarSeleccionado").textContent =
+    boletoCancelar ? String(boletoCancelar.ticket_number).padStart(3, "0") : "Ninguno";
+
+  document.getElementById("botonCancelar").disabled = !boletoCancelar;
+}
+
+async function cancelarVenta() {
+  const mensaje = document.getElementById("mensajeCancelacion");
+  const boton = document.getElementById("botonCancelar");
+
+  if (!usuarioAdministrador || !boletoCancelar) return;
+
+  const ticket = boletoCancelar;
+  const numero = String(ticket.ticket_number).padStart(3, "0");
+
+  if (!confirm("¿Confirmas cancelar la venta del boleto " + numero + "?")) return;
+
+  boton.disabled = true;
+  boton.textContent = "CANCELANDO...";
+
+  let ventaCancelada = false;
+
+  try {
+    const { data: venta, error } = await supabaseClient
+      .from("sales")
+      .select("id,status")
+      .eq("ticket_id", ticket.id)
+      .eq("status", "sold")
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!venta) throw new Error("No se encontró una venta activa para este boleto.");
+
+    const { data: actualizada, error: errorVenta } = await supabaseClient
+      .from("sales")
+      .update({ status: "cancelled" })
+      .eq("id", venta.id)
+      .eq("status", "sold")
+      .select("id")
+      .maybeSingle();
+
+    if (errorVenta) throw errorVenta;
+    if (!actualizada) throw new Error("No se pudo actualizar la venta.");
+
+    ventaCancelada = true;
+
+    const { data: ticketActualizado, error: errorTicket } = await supabaseClient
+      .from("tickets")
+      .update({ status: "available" })
+      .eq("id", ticket.id)
+      .eq("status", "sold")
+      .select("id")
+      .maybeSingle();
+
+    if (errorTicket) throw errorTicket;
+    if (!ticketActualizado) throw new Error("No se pudo liberar el boleto.");
+
+    mensaje.textContent = "Boleto " + numero + " liberado correctamente.";
+    boletoCancelar = null;
+    actualizarBoletoCancelar();
+
+    await cargarNumerosAdmin();
+    await cargarNumeros();
+
+  } catch (error) {
+    if (ventaCancelada) {
+      const { error: errorRevertir } = await supabaseClient
+        .from("sales")
+        .update({ status: "sold" })
+        .eq("ticket_id", ticket.id)
+        .eq("status", "cancelled");
+
+      mensaje.textContent = errorRevertir
+        ? "Error al restaurar la venta. Revisa este boleto: " + numero
+        : "No se pudo liberar el boleto. La venta fue restaurada.";
+    } else {
+      mensaje.textContent = "Error: " + error.message;
+    }
+  } finally {
+    boton.textContent = "CANCELAR VENTA Y LIBERAR BOLETO";
+    boton.disabled = !boletoCancelar;
+  }
+}
 async function registrarVenta(event) {
   event.preventDefault();
   const mensaje = document.getElementById("mensajeVenta");
