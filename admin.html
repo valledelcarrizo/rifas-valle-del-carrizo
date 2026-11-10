@@ -1,237 +1,299 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Administración - Rifas Valle del Carrizo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administración - Rifas Valle del Carrizo</title>
 
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f4f7;
-      margin: 0;
-      padding: 20px;
-      color: #222;
-    }
+<style>
+* { box-sizing: border-box; }
 
-    .contenedor {
-      max-width: 1000px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px #0002;
-    }
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f4f7;
+  margin: 0;
+  padding: 15px;
+  color: #222;
+}
 
-    h1 {
-      text-align: center;
-      color: #176b35;
-    }
+.contenedor {
+  max-width: 1050px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px #0002;
+}
 
-    input {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 12px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
+h1 {
+  text-align: center;
+  color: #176b35;
+}
 
-    button {
-      padding: 11px 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
 
-    .boton-verde {
-      background: #16833b;
-      color: white;
-    }
+button {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-    .boton-rojo {
-      background: #c62828;
-      color: white;
-    }
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
 
-    .boton-gris {
-      background: #555;
-      color: white;
-    }
+.boton-verde {
+  background: #16833b;
+  color: white;
+}
 
-    #panel {
-      display: none;
-    }
+.boton-rojo {
+  background: #c62828;
+  color: white;
+}
 
-    .contadores {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin: 20px 0;
-    }
+.boton-gris {
+  background: #555;
+  color: white;
+}
 
-    .contador {
-      flex: 1;
-      min-width: 120px;
-      padding: 15px;
-      border-radius: 8px;
-      text-align: center;
-      background: #eee;
-    }
+#panel {
+  display: none;
+}
 
-    .contador strong {
-      display: block;
-      font-size: 25px;
-    }
+.contadores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
 
-    .disponibles {
-      color: #16833b;
-    }
+.contador {
+  flex: 1;
+  min-width: 110px;
+  background: #eee;
+  padding: 15px;
+  text-align: center;
+  border-radius: 8px;
+}
 
-    .vendidos {
-      color: #c62828;
-    }
+.contador strong {
+  display: block;
+  font-size: 26px;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
-      gap: 8px;
-      margin-top: 20px;
-    }
+.disponibles { color: #16833b; }
+.vendidos { color: #c62828; }
+.reservados { color: #d18b00; }
 
-    .numero {
-      min-height: 55px;
-      background: #16833b;
-      color: white;
-      font-size: 15px;
-    }
+.acciones {
+  padding: 16px;
+  margin: 18px 0;
+  border-radius: 8px;
+  background: #f5f7f5;
+}
 
-    .numero.vendido {
-      background: #c62828;
-    }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+  gap: 8px;
+  margin-top: 20px;
+}
 
-    .numero.seleccionado {
-      outline: 4px solid #ffb300;
-      outline-offset: 2px;
-    }
+.numero {
+  min-height: 55px;
+  color: white;
+  font-size: 14px;
+  white-space: pre-line;
+}
 
-    .acciones {
-      margin: 20px 0;
-      padding: 15px;
-      background: #fff8e1;
-      border-radius: 8px;
-    }
+.numero.disponible {
+  background: #16833b;
+}
 
-    #mensaje {
-      margin-top: 12px;
-      font-weight: bold;
-    }
+.numero.vendido {
+  background: #c62828;
+}
 
-    .oculto {
-      display: none;
-    }
-  </style>
+.numero.reservado {
+  background: #d18b00;
+  cursor: not-allowed;
+}
+
+.numero.seleccionado {
+  outline: 4px solid #ffb300;
+  outline-offset: 2px;
+}
+
+#mensaje {
+  font-weight: bold;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+
+#mensajeLogin {
+  color: #c62828;
+}
+
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 15px 0;
+  font-size: 14px;
+}
+
+.oculto {
+  display: none;
+}
+</style>
 </head>
 
 <body>
 
 <div class="contenedor">
 
-  <h1>Rifas Valle del Carrizo</h1>
-  <h2>Panel de Administración</h2>
+<h1>Rifas Valle del Carrizo</h1>
+<h2>Panel de Administración</h2>
 
-  <section id="login">
-    <h3>Acceso de administrador</h3>
+<section id="login">
 
-    <input
-      type="email"
-      id="email"
-      value="valledelcarrizosinaloa@gmail.com"
-      placeholder="Correo electrónico"
-    >
+<h3>Acceso de administrador</h3>
 
-    <input
-      type="password"
-      id="password"
-      placeholder="Contraseña"
-    >
+<input
+  type="email"
+  id="email"
+  value="valledelcarrizosinaloa@gmail.com"
+  placeholder="Correo electrónico"
+>
 
-    <button class="boton-verde" onclick="iniciarSesion()">
-      Entrar
-    </button>
+<input
+  type="password"
+  id="password"
+  placeholder="Contraseña"
+>
 
-    <p id="mensajeLogin"></p>
-  </section>
+<button class="boton-verde" onclick="iniciarSesion()">
+  Entrar
+</button>
 
-  <section id="panel">
+<p id="mensajeLogin"></p>
 
-    <p>Bienvenido al panel de administración.</p>
+</section>
 
-    <button class="boton-verde" onclick="cargarNumeros()">
-      Actualizar boletos
-    </button>
+<section id="panel">
 
-    <button class="boton-gris" onclick="cerrarSesion()">
-      Cerrar sesión
-    </button>
+<p>Bienvenido al panel de administración.</p>
 
-    <div class="contadores">
+<button class="boton-verde" onclick="cargarNumeros()">
+  Actualizar boletos
+</button>
 
-      <div class="contador">
-        <strong id="total">110</strong>
-        Total de boletos
-      </div>
+<button class="boton-gris" onclick="cerrarSesion()">
+  Cerrar sesión
+</button>
 
-      <div class="contador">
-        <strong id="disponibles" class="disponibles">0</strong>
-        Disponibles
-      </div>
+<div class="contadores">
 
-      <div class="contador">
-        <strong id="vendidos" class="vendidos">0</strong>
-        Vendidos
-      </div>
+  <div class="contador">
+    <strong id="total">110</strong>
+    Total
+  </div>
 
-    </div>
+  <div class="contador">
+    <strong id="disponibles" class="disponibles">0</strong>
+    Disponibles
+  </div>
 
-    <div class="acciones">
+  <div class="contador">
+    <strong id="vendidos" class="vendidos">0</strong>
+    Vendidos
+  </div>
 
-      <h3>Cancelar una venta</h3>
+  <div class="contador">
+    <strong id="reservados" class="reservados">0</strong>
+    Reservados
+  </div>
 
-      <p>
-        Selecciona un boleto vendido para devolverlo a disponible.
-      </p>
+</div>
 
-      <p id="seleccion">
-        Ningún boleto seleccionado.
-      </p>
+<div class="acciones">
 
-      <button
-        id="botonCancelar"
-        class="boton-rojo"
-        onclick="cancelarVenta()"
-        disabled
-      >
-        Cancelar venta y liberar boleto
-      </button>
+<h3>Registrar una venta</h3>
 
-      <p id="mensaje"></p>
+<p id="seleccionVenta">
+  Selecciona un boleto disponible en color verde.
+</p>
 
-    </div>
+<input
+  type="text"
+  id="nombreComprador"
+  maxlength="100"
+  placeholder="Nombre o alias del comprador"
+>
 
-    <h3>Estado de los boletos</h3>
+<button
+  class="boton-verde"
+  id="botonVender"
+  onclick="marcarVendido()"
+  disabled
+>
+  MARCAR COMO VENDIDO
+</button>
 
-    <div id="numeros" class="grid"></div>
+</div>
 
-  </section>
+<div class="acciones">
+
+<h3>Cancelar una venta</h3>
+
+<p id="seleccionCancelacion">
+  Selecciona un boleto vendido en color rojo.
+</p>
+
+<button
+  class="boton-rojo"
+  id="botonCancelar"
+  onclick="cancelarVenta()"
+  disabled
+>
+  CANCELAR VENTA Y LIBERAR BOLETO
+</button>
+
+<p id="mensaje"></p>
+
+</div>
+
+<h3>Estado de los boletos</h3>
+
+<div class="leyenda">
+  <span>🟢 Disponibles</span>
+  <span>🔴 Vendidos</span>
+  <span>🟡 Reservados</span>
+</div>
+
+<div id="numeros" class="grid"></div>
+
+</section>
 
 </div>
 
 <script>
-const SUPABASE_URL = "https://kptejintrxbepdueoryd.supabase.co";
+
+const SUPABASE_URL =
+"https://kptejintrxbepdueoryd.supabase.co";
 
 const SUPABASE_KEY =
 "sb_publishable_5hkytZdrjhkHUFkqC0u22A_Pjr68fOo";
@@ -244,39 +306,12 @@ const supabaseClient = window.supabase.createClient(
 const RAFFLE_SLUG = "primera-rifa-1000";
 
 let usuarioAdministrador = null;
-let boletoSeleccionado = null;
 let boletosAdmin = [];
+let boletoSeleccionado = null;
+let raffleIdActual = null;
 
-async function iniciarSesion() {
-
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-
-  const mensaje = document.getElementById("mensajeLogin");
-  mensaje.textContent = "Verificando acceso...";
-
-  const { error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if (error) {
-    mensaje.textContent = "Error de acceso: " + error.message;
-    return;
-  }
-
-  const autorizado = await verificarAdministrador();
-
-  if (!autorizado) {
-    await supabaseClient.auth.signOut();
-    mensaje.textContent = "No tienes permisos de administrador.";
-    return;
-  }
-
-  document.getElementById("login").style.display = "none";
-  document.getElementById("panel").style.display = "block";
-
-  await cargarNumeros();
+function numeroBonito(numero) {
+  return String(numero).padStart(3, "0");
 }
 
 async function verificarAdministrador() {
@@ -295,13 +330,60 @@ async function verificarAdministrador() {
     .eq("id", user.id)
     .single();
 
-  if (error || !data || data.role !== "admin" || data.active !== true) {
+  if (
+    error ||
+    !data ||
+    data.role !== "admin" ||
+    data.active !== true
+  ) {
     usuarioAdministrador = null;
     return false;
   }
 
   usuarioAdministrador = user;
+
   return true;
+}
+
+async function iniciarSesion() {
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  const mensaje =
+    document.getElementById("mensajeLogin");
+
+  mensaje.textContent = "Verificando acceso...";
+
+  const { error } =
+    await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+  if (error) {
+    mensaje.textContent = error.message;
+    return;
+  }
+
+  const autorizado = await verificarAdministrador();
+
+  if (!autorizado) {
+    await supabaseClient.auth.signOut();
+
+    mensaje.textContent =
+      "No tienes permisos de administrador.";
+
+    return;
+  }
+
+  document.getElementById("login").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+
+  await cargarNumeros();
 }
 
 async function cargarNumeros() {
@@ -309,41 +391,55 @@ async function cargarNumeros() {
   const autorizado = await verificarAdministrador();
 
   if (!autorizado) {
-    alert("Tu sesión no está autorizada. Inicia sesión nuevamente.");
+    alert("Tu sesión no está autorizada.");
     await cerrarSesion();
     return;
   }
 
-  const contenedor = document.getElementById("numeros");
-  const mensaje = document.getElementById("mensaje");
+  const contenedor =
+    document.getElementById("numeros");
+
+  const mensaje =
+    document.getElementById("mensaje");
 
   contenedor.innerHTML = "Cargando boletos...";
+
   mensaje.textContent = "";
 
   boletoSeleccionado = null;
   actualizarSeleccion();
 
-  const { data: rifa, error: errorRifa } = await supabaseClient
-    .from("raffles")
-    .select("id")
-    .eq("slug", RAFFLE_SLUG)
-    .single();
+  const { data: rifa, error: errorRifa } =
+    await supabaseClient
+      .from("raffles")
+      .select("id")
+      .eq("slug", RAFFLE_SLUG)
+      .single();
 
   if (errorRifa || !rifa) {
-    contenedor.innerHTML = "No se pudo encontrar la rifa.";
-    mensaje.textContent = errorRifa?.message || "";
+    contenedor.innerHTML =
+      "No se pudo encontrar la rifa.";
+
+    mensaje.textContent =
+      errorRifa?.message || "";
+
     return;
   }
 
-  const { data: boletos, error } = await supabaseClient
-    .from("tickets")
-    .select("id, raffle_id, ticket_number, status")
-    .eq("raffle_id", rifa.id)
-    .order("ticket_number", { ascending: true });
+  raffleIdActual = rifa.id;
+
+  const { data: boletos, error } =
+    await supabaseClient
+      .from("tickets")
+      .select("id, raffle_id, ticket_number, status")
+      .eq("raffle_id", raffleIdActual)
+      .order("ticket_number", { ascending: true });
 
   if (error) {
     contenedor.innerHTML = "Error al cargar boletos.";
+
     mensaje.textContent = error.message;
+
     return;
   }
 
@@ -353,36 +449,65 @@ async function cargarNumeros() {
 
   let disponibles = 0;
   let vendidos = 0;
+  let reservados = 0;
 
   boletosAdmin.forEach(boleto => {
 
-    const numero = String(boleto.ticket_number).padStart(3, "0");
+    const numero = numeroBonito(boleto.ticket_number);
 
     const boton = document.createElement("button");
 
     boton.className = "numero";
 
+    boton.dataset.id = boleto.id;
+
     if (boleto.status === "sold") {
+
       boton.classList.add("vendido");
+
       boton.textContent = numero + "\nVENDIDO";
+
       vendidos++;
 
       boton.onclick = () => seleccionarBoleto(boleto.id);
 
-    } else {
-      boton.textContent = numero + "\nLIBRE";
-      disponibles++;
-    }
+    } else if (boleto.status === "reserved") {
 
-    boton.dataset.id = boleto.id;
+      boton.classList.add("reservado");
+
+      boton.textContent = numero + "\nRESERVADO";
+
+      boton.disabled = true;
+
+      reservados++;
+
+    } else {
+
+      boton.classList.add("disponible");
+
+      boton.textContent = numero + "\nLIBRE";
+
+      disponibles++;
+
+      boton.onclick = () => seleccionarBoleto(boleto.id);
+
+    }
 
     contenedor.appendChild(boton);
 
   });
 
-  document.getElementById("total").textContent = boletosAdmin.length;
-  document.getElementById("disponibles").textContent = disponibles;
-  document.getElementById("vendidos").textContent = vendidos;
+  document.getElementById("total").textContent =
+    boletosAdmin.length;
+
+  document.getElementById("disponibles").textContent =
+    disponibles;
+
+  document.getElementById("vendidos").textContent =
+    vendidos;
+
+  document.getElementById("reservados").textContent =
+    reservados;
 }
 
 function seleccionarBoleto(id) {
@@ -408,27 +533,68 @@ function seleccionarBoleto(id) {
 
 function actualizarSeleccion() {
 
-  const texto = document.getElementById("seleccion");
-  const botonCancelar = document.getElementById("botonCancelar");
+  const venta =
+    document.getElementById("seleccionVenta");
+
+  const cancelacion =
+    document.getElementById("seleccionCancelacion");
+
+  const botonVender =
+    document.getElementById("botonVender");
+
+  const botonCancelar =
+    document.getElementById("botonCancelar");
+
+  botonVender.disabled = true;
+  botonCancelar.disabled = true;
 
   if (!boletoSeleccionado) {
-    texto.textContent = "Ningún boleto seleccionado.";
-    botonCancelar.disabled = true;
+
+    venta.textContent =
+      "Selecciona un boleto disponible en color verde.";
+
+    cancelacion.textContent =
+      "Selecciona un boleto vendido en color rojo.";
+
     return;
   }
 
-  const numero = String(
-    boletoSeleccionado.ticket_number
-  ).padStart(3, "0");
+  const numero =
+    numeroBonito(boletoSeleccionado.ticket_number);
 
-  texto.textContent = "Boleto seleccionado: " + numero;
-  botonCancelar.disabled = false;
+  if (boletoSeleccionado.status === "available") {
+
+    venta.textContent =
+      "Boleto seleccionado: " + numero;
+
+    cancelacion.textContent =
+      "Este boleto está disponible.";
+
+    botonVender.disabled = false;
+
+  } else if (boletoSeleccionado.status === "sold") {
+
+    cancelacion.textContent =
+      "Boleto vendido seleccionado: " + numero;
+
+    venta.textContent =
+      "Este boleto ya está vendido.";
+
+    botonCancelar.disabled = false;
+
+  }
+
 }
 
-async function cancelarVenta() {
+async function marcarVendido() {
 
   if (!boletoSeleccionado) {
-    alert("Primero selecciona un boleto vendido.");
+    alert("Selecciona un boleto disponible.");
+    return;
+  }
+
+  if (boletoSeleccionado.status !== "available") {
+    alert("Este boleto ya no está disponible.");
     return;
   }
 
@@ -440,48 +606,239 @@ async function cancelarVenta() {
     return;
   }
 
-  const numero = String(
-    boletoSeleccionado.ticket_number
-  ).padStart(3, "0");
+  const nombre =
+    document.getElementById("nombreComprador")
+    .value.trim();
+
+  if (!nombre) {
+    alert("Escribe el nombre o alias del comprador.");
+    return;
+  }
+
+  const numero =
+    numeroBonito(boletoSeleccionado.ticket_number);
 
   const confirmar = confirm(
-    "¿Confirmas cancelar la venta del boleto " +
+    "¿Confirmas vender el boleto " +
     numero +
-    " y devolverlo a DISPONIBLE?"
+    " a nombre de " +
+    nombre +
+    "?"
   );
 
   if (!confirmar) return;
 
-  const mensaje = document.getElementById("mensaje");
+  const mensaje =
+    document.getElementById("mensaje");
 
-  mensaje.textContent = "Procesando cancelación...";
+  mensaje.textContent =
+    "Registrando venta...";
 
-  const id = boletoSeleccionado.id;
+  const boleto = boletoSeleccionado;
 
-  const { data, error } = await supabaseClient
-    .from("tickets")
-    .update({ status: "available" })
-    .eq("id", id)
-    .eq("status", "sold")
-    .select("id");
+  /*
+    Primero registramos la venta.
+    El teléfono no se solicita.
+    buyer_phone permite NULL.
+    payment_status usa el valor predeterminado pending.
+  */
 
-  if (error) {
-    mensaje.textContent = "No se pudo cancelar: " + error.message;
+  const { data: venta, error: errorVenta } =
+    await supabaseClient
+      .from("sales")
+      .insert({
+        raffle_id: boleto.raffle_id,
+        ticket_id: boleto.id,
+        seller_id: usuarioAdministrador.id,
+        buyer_name: nombre,
+        sale_status: "active"
+      })
+      .select("id")
+      .single();
+
+  if (errorVenta) {
+
+    mensaje.textContent =
+      "No se pudo registrar la venta: " +
+      errorVenta.message;
+
     return;
   }
 
-  if (!data || data.length === 0) {
+  /*
+    Después cambiamos el boleto a vendido.
+  */
+
+  const { data: actualizado, error: errorTicket } =
+    await supabaseClient
+      .from("tickets")
+      .update({ status: "sold" })
+      .eq("id", boleto.id)
+      .eq("status", "available")
+      .select("id");
+
+  if (errorTicket || !actualizado || actualizado.length === 0) {
+
+    /*
+      Si no se pudo marcar el boleto,
+      conservamos el registro como cancelado.
+    */
+
+    await supabaseClient
+      .from("sales")
+      .update({ sale_status: "canceled" })
+      .eq("id", venta.id);
+
     mensaje.textContent =
-      "El boleto ya no está vendido. Actualiza la lista.";
-    boletoSeleccionado = null;
-    actualizarSeleccion();
+      "El boleto cambió de estado. " +
+      "La operación fue cancelada. Actualiza la lista.";
+
+    await cargarNumeros();
+
+    return;
+  }
+
+  document.getElementById("nombreComprador").value = "";
+
+  boletoSeleccionado = null;
+
+  mensaje.textContent =
+    "¡Venta registrada! Boleto " + numero +
+    " vendido a " + nombre + ".";
+
+  await cargarNumeros();
+}
+
+async function cancelarVenta() {
+
+  if (!boletoSeleccionado) {
+    alert("Selecciona un boleto vendido.");
+    return;
+  }
+
+  if (boletoSeleccionado.status !== "sold") {
+    alert("Este boleto no está vendido.");
+    return;
+  }
+
+  const autorizado = await verificarAdministrador();
+
+  if (!autorizado) {
+    alert("Tu sesión ya no está autorizada.");
+    await cerrarSesion();
+    return;
+  }
+
+  const boleto = boletoSeleccionado;
+
+  const numero =
+    numeroBonito(boleto.ticket_number);
+
+  const confirmar = confirm(
+    "¿Confirmas cancelar el boleto " +
+    numero +
+    " y devolverlo a disponible?"
+  );
+
+  if (!confirmar) return;
+
+  const mensaje =
+    document.getElementById("mensaje");
+
+  mensaje.textContent =
+    "Procesando cancelación...";
+
+  /*
+    Buscamos la venta activa correspondiente.
+  */
+
+  const { data: venta, error: errorBusqueda } =
+    await supabaseClient
+      .from("sales")
+      .select("id")
+      .eq("ticket_id", boleto.id)
+      .eq("sale_status", "active")
+      .maybeSingle();
+
+  if (errorBusqueda) {
+    mensaje.textContent =
+      "Error al buscar la venta: " +
+      errorBusqueda.message;
+
+    return;
+  }
+
+  /*
+    Si existe una venta registrada,
+    la conservamos y cambiamos su estado.
+  */
+
+  if (venta) {
+
+    const { error: errorCancelar } =
+      await supabaseClient
+        .from("sales")
+        .update({ sale_status: "canceled" })
+        .eq("id", venta.id)
+        .eq("sale_status", "active");
+
+    if (errorCancelar) {
+
+      mensaje.textContent =
+        "No se pudo cancelar la venta: " +
+        errorCancelar.message;
+
+      return;
+    }
+
+  }
+
+  /*
+    Liberamos el boleto.
+  */
+
+  const { data: actualizado, error: errorTicket } =
+    await supabaseClient
+      .from("tickets")
+      .update({ status: "available" })
+      .eq("id", boleto.id)
+      .eq("status", "sold")
+      .select("id");
+
+  if (
+    errorTicket ||
+    !actualizado ||
+    actualizado.length === 0
+  ) {
+
+    /*
+      Si no se pudo liberar el boleto,
+      intentamos restaurar la venta activa.
+    */
+
+    if (venta) {
+
+      await supabaseClient
+        .from("sales")
+        .update({ sale_status: "active" })
+        .eq("id", venta.id);
+
+    }
+
+    mensaje.textContent =
+      "No se pudo liberar el boleto. " +
+      "Actualiza la lista e intenta nuevamente.";
+
+    await cargarNumeros();
+
     return;
   }
 
   boletoSeleccionado = null;
 
   mensaje.textContent =
-    "El boleto " + numero + " ahora está DISPONIBLE.";
+    "Boleto " + numero +
+    " cancelado y devuelto a disponible.";
 
   await cargarNumeros();
 }
@@ -495,9 +852,11 @@ async function cerrarSesion() {
   boletosAdmin = [];
 
   document.getElementById("panel").style.display = "none";
+
   document.getElementById("login").style.display = "block";
 
   document.getElementById("password").value = "";
+
 }
 
 async function revisarSesion() {
@@ -510,15 +869,23 @@ async function revisarSesion() {
   const autorizado = await verificarAdministrador();
 
   if (autorizado) {
+
     document.getElementById("login").style.display = "none";
+
     document.getElementById("panel").style.display = "block";
+
     await cargarNumeros();
+
   } else {
+
     await supabaseClient.auth.signOut();
+
   }
+
 }
 
 revisarSesion();
+
 </script>
 
 </body>
