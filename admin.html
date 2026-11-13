@@ -243,6 +243,12 @@ button:disabled {
   maxlength="100"
   placeholder="Nombre o alias del comprador"
 >
+ <input
+  type="tel"
+  id="telefonoComprador"
+  maxlength="20"
+  placeholder="WhatsApp del comprador (opcional)"
+> 
 
 <button
   class="boton-verde"
@@ -609,7 +615,9 @@ async function marcarVendido() {
   const nombre =
     document.getElementById("nombreComprador")
     .value.trim();
-
+const telefono =
+  document.getElementById("telefonoComprador")
+  .value.trim();
   if (!nombre) {
     alert("Escribe el nombre o alias del comprador.");
     return;
@@ -650,8 +658,10 @@ async function marcarVendido() {
         raffle_id: boleto.raffle_id,
         ticket_id: boleto.id,
         seller_id: usuarioAdministrador.id,
-        buyer_name: nombre,
-        sale_status: "active"
+     buyer_name: nombre,
+buyer_phone: telefono || null,
+buyer_name_public: false,
+sale_status: "active"
       })
       .select("id")
       .single();
@@ -699,7 +709,7 @@ async function marcarVendido() {
   }
 
   document.getElementById("nombreComprador").value = "";
-
+document.getElementById("telefonoComprador").value = "";
   boletoSeleccionado = null;
 
   mensaje.textContent =
