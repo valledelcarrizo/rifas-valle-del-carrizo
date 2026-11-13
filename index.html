@@ -296,7 +296,7 @@ async function cargarNumerosAdmin() {
       tarjeta.disabled = estadoTicket === "reserved" ||
   (estadoTicket !== "available" && estadoTicket !== "sold");
       const numero = document.createElement("div");
-      numero.textContent = String(ticket.ticket_number).padStart(3, "0");
+      numero.textContent = String(ticket.ticket_number).padStart(2, "0");
       const etiqueta = document.createElement("small");
       etiqueta.textContent = estaVendido ? "✕ VENDIDO" :
         (estadoTicket === "reserved" ? "RESERVADO" : "DISPONIBLE");
