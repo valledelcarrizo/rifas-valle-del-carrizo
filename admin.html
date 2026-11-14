@@ -787,21 +787,25 @@ async function cancelarVenta() {
   */
 
   if (venta) {
+const { data: ventaCancelada, error: errorCancelar } =
+  await supabaseClient
+    .from("sales")
+    .update({ sale_status: "canceled" })
+    .eq("id", venta.id)
+    .eq("sale_status", "active")
+    .select("id");
 
-    const { error: errorCancelar } =
-      await supabaseClient
-        .from("sales")
-        .update({ sale_status: "canceled" })
-        .eq("id", venta.id)
-        .eq("sale_status", "active");
+if (errorCancelar || !ventaCancelada || ventaCancelada.length === 0) {
+  mensaje.textContent =
+    "No se pudo confirmar la cancelación. El número sigue sin liberarse.";
 
-    if (errorCancelar) {
+  if (errorCancelar) {
+    mensaje.textContent += " " + errorCancelar.message;
+  }
 
-      mensaje.textContent =
-        "No se pudo cancelar la venta: " +
-        errorCancelar.message;
-
-      return;
+  return;
+}
+   
     }
 
   }
