@@ -316,8 +316,8 @@ let boletosAdmin = [];
 let boletoSeleccionado = null;
 let raffleIdActual = null;
 
-function numeroBonito(numero) {
-  return String(numero).padStart(2, "0");
+  function numeroBonito(numero) {
+  return String(Number(numero)).padStart(2, "0");
 }
 
 async function verificarAdministrador() {
