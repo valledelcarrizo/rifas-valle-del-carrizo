@@ -449,7 +449,10 @@ async function cargarNumeros() {
     return;
   }
 
-  boletosAdmin = boletos || [];
+  boletosAdmin = (boletos || []).filter(boleto => {
+  const numero = Number(boleto.ticket_number);
+  return Number.isInteger(numero) && numero >= 0 && numero <= 99;
+});
 
   contenedor.innerHTML = "";
 
