@@ -243,12 +243,13 @@ button:disabled {
   maxlength="100"
   placeholder="Nombre o alias del comprador"
 >
- <input
+
+<input
   type="tel"
   id="telefonoComprador"
   maxlength="20"
   placeholder="WhatsApp del comprador (opcional)"
-> 
+>
 
 <button
   class="boton-verde"
@@ -316,7 +317,7 @@ let boletosAdmin = [];
 let boletoSeleccionado = null;
 let raffleIdActual = null;
 
-  function numeroBonito(numero) {
+function numeroBonito(numero) {
   return String(Number(numero)).padStart(2, "0");
 }
 
@@ -450,9 +451,9 @@ async function cargarNumeros() {
   }
 
   boletosAdmin = (boletos || []).filter(boleto => {
-  const numero = Number(boleto.ticket_number);
-  return Number.isInteger(numero) && numero >= 0 && numero <= 99;
-});
+    const numero = Number(boleto.ticket_number);
+    return Number.isInteger(numero) && numero >= 0 && numero <= 99;
+  });
 
   contenedor.innerHTML = "";
 
@@ -618,9 +619,11 @@ async function marcarVendido() {
   const nombre =
     document.getElementById("nombreComprador")
     .value.trim();
-const telefono =
-  document.getElementById("telefonoComprador")
-  .value.trim();
+
+  const telefono =
+    document.getElementById("telefonoComprador")
+    .value.trim();
+
   if (!nombre) {
     alert("Escribe el nombre o alias del comprador.");
     return;
@@ -661,10 +664,10 @@ const telefono =
         raffle_id: boleto.raffle_id,
         ticket_id: boleto.id,
         seller_id: usuarioAdministrador.id,
-     buyer_name: nombre,
-buyer_phone: telefono || null,
-buyer_name_public: false,
-sale_status: "active"
+        buyer_name: nombre,
+        buyer_phone: telefono || null,
+        buyer_name_public: false,
+        sale_status: "active"
       })
       .select("id")
       .single();
@@ -712,7 +715,8 @@ sale_status: "active"
   }
 
   document.getElementById("nombreComprador").value = "";
-document.getElementById("telefonoComprador").value = "";
+  document.getElementById("telefonoComprador").value = "";
+
   boletoSeleccionado = null;
 
   mensaje.textContent =
@@ -787,25 +791,25 @@ async function cancelarVenta() {
   */
 
   if (venta) {
-const { data: ventaCancelada, error: errorCancelar } =
-  await supabaseClient
-    .from("sales")
-    .update({ sale_status: "canceled" })
-    .eq("id", venta.id)
-    .eq("sale_status", "active")
-    .select("id");
 
-if (errorCancelar || !ventaCancelada || ventaCancelada.length === 0) {
-  mensaje.textContent =
-    "No se pudo confirmar la cancelación. El número sigue sin liberarse.";
+    const { data: ventaCancelada, error: errorCancelar } =
+      await supabaseClient
+        .from("sales")
+        .update({ sale_status: "canceled" })
+        .eq("id", venta.id)
+        .eq("sale_status", "active")
+        .select("id");
 
-  if (errorCancelar) {
-    mensaje.textContent += " " + errorCancelar.message;
-  }
+    if (errorCancelar || !ventaCancelada || ventaCancelada.length === 0) {
 
-  return;
-}
-   
+      mensaje.textContent =
+        "No se pudo confirmar la cancelación. El número sigue sin liberarse.";
+
+      if (errorCancelar) {
+        mensaje.textContent += " " + errorCancelar.message;
+      }
+
+      return;
     }
 
   }
@@ -907,4 +911,3 @@ revisarSesion();
 
 </body>
 </html>
-
