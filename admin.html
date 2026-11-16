@@ -1,15 +1,14 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Administración - Rifas Valle del Carrizo</title>
-
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 <style>
 * { box-sizing: border-box; }
-
 body {
   font-family: Arial, sans-serif;
   background: #f2f4f7;
@@ -17,7 +16,6 @@ body {
   padding: 15px;
   color: #222;
 }
-
 .contenedor {
   max-width: 1050px;
   margin: auto;
@@ -26,12 +24,7 @@ body {
   border-radius: 12px;
   box-shadow: 0 2px 10px #0002;
 }
-
-h1 {
-  text-align: center;
-  color: #176b35;
-}
-
+h1 { text-align: center; color: #176b35; }
 input {
   width: 100%;
   padding: 12px;
@@ -40,7 +33,6 @@ input {
   border-radius: 6px;
   font-size: 16px;
 }
-
 button {
   padding: 12px 16px;
   border: none;
@@ -48,38 +40,17 @@ button {
   cursor: pointer;
   font-weight: bold;
 }
-
-button:disabled {
-  opacity: .5;
-  cursor: not-allowed;
-}
-
-.boton-verde {
-  background: #16833b;
-  color: white;
-}
-
-.boton-rojo {
-  background: #c62828;
-  color: white;
-}
-
-.boton-gris {
-  background: #555;
-  color: white;
-}
-
-#panel {
-  display: none;
-}
-
+button:disabled { opacity: .5; cursor: not-allowed; }
+.boton-verde { background: #16833b; color: white; }
+.boton-rojo { background: #c62828; color: white; }
+.boton-gris { background: #555; color: white; }
+#panel { display: none; }
 .contadores {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin: 20px 0;
 }
-
 .contador {
   flex: 1;
   min-width: 100px;
@@ -88,59 +59,39 @@ button:disabled {
   text-align: center;
   border-radius: 8px;
 }
-
-.contador strong {
-  display: block;
-  font-size: 26px;
-}
-
+.contador strong { display: block; font-size: 26px; }
 .disponibles { color: #16833b; }
 .vendidos { color: #c62828; }
-
 .acciones {
   padding: 16px;
   margin: 18px 0;
   border-radius: 8px;
   background: #f5f7f5;
 }
-
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
   gap: 8px;
   margin-top: 20px;
 }
-
 .numero {
   min-height: 55px;
   color: white;
   font-size: 14px;
   white-space: pre-line;
 }
-
-.numero.disponible {
-  background: #16833b;
-}
-
-.numero.vendido {
-  background: #c62828;
-}
-
+.numero.disponible { background: #16833b; }
+.numero.vendido { background: #c62828; }
 .numero.seleccionado {
   outline: 4px solid #ffb300;
   outline-offset: 2px;
 }
-
 #mensaje {
   font-weight: bold;
   margin-top: 12px;
   overflow-wrap: anywhere;
 }
-
-#mensajeLogin {
-  color: #c62828;
-}
-
+#mensajeLogin { color: #c62828; }
 .leyenda {
   display: flex;
   flex-wrap: wrap;
@@ -148,35 +99,31 @@ button:disabled {
   margin: 15px 0;
   font-size: 14px;
 }
-
-.oculto {
-  display: none;
-}
+.oculto { display: none; }
 </style>
 </head>
 
 <body>
-
 <div class="contenedor">
 
 <h1>Rifas Valle del Carrizo</h1>
 <h2>Panel de Administración</h2>
 
 <section id="login">
-
-<h3>Acceso de administrador</h3>
+<h3>Acceso de administración y ventas</h3>
 
 <input
-  type="email"
-  id="email"
-  value="valledelcarrizosinaloa@gmail.com"
-  placeholder="Correo electrónico"
+  type="text"
+  id="username"
+  placeholder="Usuario o correo del administrador"
+  autocomplete="username"
 >
 
 <input
   type="password"
   id="password"
   placeholder="Contraseña"
+  autocomplete="current-password"
 >
 
 <button class="boton-verde" onclick="iniciarSesion()">
@@ -184,12 +131,11 @@ button:disabled {
 </button>
 
 <p id="mensajeLogin"></p>
-
 </section>
 
 <section id="panel">
 
-<p>Bienvenido al panel de administración.</p>
+<p id="bienvenidaUsuario">Bienvenido al panel.</p>
 
 <button class="boton-verde" onclick="cargarNumeros()">
   Actualizar boletos
@@ -200,7 +146,6 @@ button:disabled {
 </button>
 
 <div class="contadores">
-
   <div class="contador">
     <strong id="total">100</strong>
     Total
@@ -215,11 +160,9 @@ button:disabled {
     <strong id="vendidos" class="vendidos">0</strong>
     Vendidos
   </div>
-
 </div>
 
 <div class="acciones">
-
 <h3>Registrar una venta</h3>
 
 <p id="seleccionVenta">
@@ -248,11 +191,9 @@ button:disabled {
 >
   MARCAR COMO VENDIDO
 </button>
-
 </div>
 
-<div class="acciones">
-
+<div class="acciones" id="zonaCancelar">
 <h3>Cancelar una venta</h3>
 
 <p id="seleccionCancelacion">
@@ -269,7 +210,6 @@ button:disabled {
 </button>
 
 <p id="mensaje"></p>
-
 </div>
 
 <h3>Estado de los boletos</h3>
@@ -280,13 +220,10 @@ button:disabled {
 </div>
 
 <div id="numeros" class="grid"></div>
-
 </section>
-
 </div>
 
 <script>
-
 const SUPABASE_URL =
 "https://kptejintrxbepdueoryd.supabase.co";
 
@@ -301,6 +238,7 @@ const supabaseClient = window.supabase.createClient(
 const RAFFLE_SLUG = "primera-rifa-1000";
 
 let usuarioAdministrador = null;
+let perfilActual = null;
 let boletosAdmin = [];
 let boletoSeleccionado = null;
 let raffleIdActual = null;
@@ -309,41 +247,63 @@ function numeroBonito(numero) {
   return String(Number(numero)).padStart(2, "0");
 }
 
-async function verificarAdministrador() {
-
+async function verificarUsuario() {
   const { data: { user }, error: errorSesion } =
     await supabaseClient.auth.getUser();
 
   if (errorSesion || !user) {
     usuarioAdministrador = null;
+    perfilActual = null;
     return false;
   }
 
   const { data, error } = await supabaseClient
     .from("profiles")
-    .select("role, active")
+    .select("full_name, role, active")
     .eq("id", user.id)
     .single();
 
   if (
     error ||
     !data ||
-    data.role !== "admin" ||
+    !["admin", "seller"].includes(data.role) ||
     data.active !== true
   ) {
     usuarioAdministrador = null;
+    perfilActual = null;
     return false;
   }
 
   usuarioAdministrador = user;
-
+  perfilActual = data;
   return true;
 }
 
-async function iniciarSesion() {
+function esAdministrador() {
+  return perfilActual && perfilActual.role === "admin";
+}
 
-  const email =
-    document.getElementById("email").value.trim();
+function mostrarUsuario() {
+  const nombre = perfilActual?.full_name || "Usuario";
+  const cargo = esAdministrador()
+    ? "Administrador"
+    : "Ejecutivo de ventas";
+
+  document.getElementById("bienvenidaUsuario").textContent =
+    "Bienvenido, " + nombre + " · " + cargo;
+
+  const zonaCancelar = document.getElementById("zonaCancelar");
+
+  zonaCancelar.style.display =
+    esAdministrador() ? "block" : "none";
+
+  document.getElementById("botonCancelar").disabled =
+    !esAdministrador();
+}
+
+async function iniciarSesion() {
+  const username =
+    document.getElementById("username").value.trim();
 
   const password =
     document.getElementById("password").value;
@@ -351,39 +311,58 @@ async function iniciarSesion() {
   const mensaje =
     document.getElementById("mensajeLogin");
 
-  mensaje.textContent = "Verificando acceso...";
-
-  const { error } =
-    await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
-
-  if (error) {
-    mensaje.textContent = error.message;
+  if (!username || !password) {
+    mensaje.textContent = "Escribe tu usuario y contraseña.";
     return;
   }
 
-  const autorizado = await verificarAdministrador();
+  mensaje.textContent = "Verificando acceso...";
+
+  const { data, error } =
+    await supabaseClient.functions.invoke(
+      "login-username",
+      { body: { username, password } }
+    );
+
+  if (error || !data?.access_token || !data?.refresh_token) {
+    mensaje.textContent =
+      data?.error ||
+      error?.message ||
+      "No se pudo iniciar sesión.";
+    return;
+  }
+
+  const { error: errorSesion } =
+    await supabaseClient.auth.setSession({
+      access_token: data.access_token,
+      refresh_token: data.refresh_token
+    });
+
+  if (errorSesion) {
+    mensaje.textContent =
+      "No se pudo establecer la sesión: " +
+      errorSesion.message;
+    return;
+  }
+
+  const autorizado = await verificarUsuario();
 
   if (!autorizado) {
     await supabaseClient.auth.signOut();
-
     mensaje.textContent =
-      "No tienes permisos de administrador.";
-
+      "Tu perfil no está activo o no tiene permisos.";
     return;
   }
 
   document.getElementById("login").style.display = "none";
   document.getElementById("panel").style.display = "block";
 
+  mostrarUsuario();
   await cargarNumeros();
 }
 
- async function cargarNumeros() {
-
-  const autorizado = await verificarAdministrador();
+async function cargarNumeros() {
+  const autorizado = await verificarUsuario();
 
   if (!autorizado) {
     alert("Tu sesión no está autorizada.");
@@ -391,14 +370,12 @@ async function iniciarSesion() {
     return;
   }
 
-  const contenedor =
-    document.getElementById("numeros");
+  mostrarUsuario();
 
-  const mensaje =
-    document.getElementById("mensaje");
+  const contenedor = document.getElementById("numeros");
+  const mensaje = document.getElementById("mensaje");
 
   contenedor.innerHTML = "Cargando boletos...";
-
   mensaje.textContent = "";
 
   boletoSeleccionado = null;
@@ -412,12 +389,8 @@ async function iniciarSesion() {
       .single();
 
   if (errorRifa || !rifa) {
-    contenedor.innerHTML =
-      "No se pudo encontrar la rifa.";
-
-    mensaje.textContent =
-      errorRifa?.message || "";
-
+    contenedor.innerHTML = "No se pudo encontrar la rifa.";
+    mensaje.textContent = errorRifa?.message || "";
     return;
   }
 
@@ -440,7 +413,9 @@ async function iniciarSesion() {
 
   boletosAdmin = (boletos || []).filter(boleto => {
     const numero = Number(boleto.ticket_number);
-    return Number.isInteger(numero) && numero >= 0 && numero <= 99;
+    return Number.isInteger(numero) &&
+      numero >= 0 &&
+      numero <= 99;
   });
 
   contenedor.innerHTML = "";
@@ -449,7 +424,6 @@ async function iniciarSesion() {
   let vendidos = 0;
 
   boletosAdmin.forEach(boleto => {
-
     const numero = numeroBonito(boleto.ticket_number);
     const boton = document.createElement("button");
 
@@ -457,28 +431,23 @@ async function iniciarSesion() {
     boton.dataset.id = boleto.id;
 
     if (boleto.status === "sold") {
-
       boton.classList.add("vendido");
       boton.textContent = numero + "\nVENDIDO";
       vendidos++;
       boton.onclick = () => seleccionarBoleto(boleto.id);
 
     } else if (boleto.status === "available") {
-
       boton.classList.add("disponible");
       boton.textContent = numero + "\nLIBRE";
       disponibles++;
       boton.onclick = () => seleccionarBoleto(boleto.id);
 
     } else {
-
       boton.disabled = true;
       boton.textContent = numero + "\nNO DISPONIBLE";
-
     }
 
     contenedor.appendChild(boton);
-
   });
 
   document.getElementById("total").textContent =
@@ -489,11 +458,9 @@ async function iniciarSesion() {
 
   document.getElementById("vendidos").textContent =
     vendidos;
-
 }
 
 function seleccionarBoleto(id) {
-
   boletoSeleccionado = boletosAdmin.find(
     boleto => boleto.id === id
   );
@@ -514,10 +481,7 @@ function seleccionarBoleto(id) {
 }
 
 function actualizarSeleccion() {
-
-  const venta =
-    document.getElementById("seleccionVenta");
-
+  const venta = document.getElementById("seleccionVenta");
   const cancelacion =
     document.getElementById("seleccionCancelacion");
 
@@ -531,7 +495,6 @@ function actualizarSeleccion() {
   botonCancelar.disabled = true;
 
   if (!boletoSeleccionado) {
-
     venta.textContent =
       "Selecciona un boleto disponible en color verde.";
 
@@ -545,31 +508,20 @@ function actualizarSeleccion() {
     numeroBonito(boletoSeleccionado.ticket_number);
 
   if (boletoSeleccionado.status === "available") {
-
-    venta.textContent =
-      "Boleto seleccionado: " + numero;
-
-    cancelacion.textContent =
-      "Este boleto está disponible.";
-
+    venta.textContent = "Boleto seleccionado: " + numero;
+    cancelacion.textContent = "Este boleto está disponible.";
     botonVender.disabled = false;
 
   } else if (boletoSeleccionado.status === "sold") {
-
     cancelacion.textContent =
       "Boleto vendido seleccionado: " + numero;
 
-    venta.textContent =
-      "Este boleto ya está vendido.";
-
-    botonCancelar.disabled = false;
-
+    venta.textContent = "Este boleto ya está vendido.";
+    botonCancelar.disabled = !esAdministrador();
   }
-
 }
 
 async function marcarVendido() {
-
   if (!boletoSeleccionado) {
     alert("Selecciona un boleto disponible.");
     return;
@@ -580,7 +532,7 @@ async function marcarVendido() {
     return;
   }
 
-  const autorizado = await verificarAdministrador();
+  const autorizado = await verificarUsuario();
 
   if (!autorizado) {
     alert("Tu sesión ya no está autorizada.");
@@ -589,12 +541,10 @@ async function marcarVendido() {
   }
 
   const nombre =
-    document.getElementById("nombreComprador")
-    .value.trim();
+    document.getElementById("nombreComprador").value.trim();
 
   const telefono =
-    document.getElementById("telefonoComprador")
-    .value.trim();
+    document.getElementById("telefonoComprador").value.trim();
 
   if (!nombre) {
     alert("Escribe el nombre o alias del comprador.");
@@ -614,9 +564,7 @@ async function marcarVendido() {
 
   if (!confirmar) return;
 
-  const mensaje =
-    document.getElementById("mensaje");
-
+  const mensaje = document.getElementById("mensaje");
   mensaje.textContent = "Registrando venta...";
 
   const boleto = boletoSeleccionado;
@@ -651,8 +599,11 @@ async function marcarVendido() {
       .eq("status", "available")
       .select("id");
 
-  if (errorTicket || !actualizado || actualizado.length === 0) {
-
+  if (
+    errorTicket ||
+    !actualizado ||
+    actualizado.length === 0
+  ) {
     await supabaseClient
       .from("sales")
       .update({ sale_status: "canceled" })
@@ -672,13 +623,22 @@ async function marcarVendido() {
   boletoSeleccionado = null;
 
   mensaje.textContent =
-    "¡Venta registrada! Boleto " + numero +
-    " vendido a " + nombre + ".";
+    "¡Venta registrada! Boleto " +
+    numero +
+    " vendido a " +
+    nombre +
+    ".";
 
   await cargarNumeros();
 }
 
 async function cancelarVenta() {
+  if (!esAdministrador()) {
+    alert(
+      "La cancelación de ventas es exclusiva del administrador."
+    );
+    return;
+  }
 
   if (!boletoSeleccionado) {
     alert("Selecciona un boleto vendido.");
@@ -690,18 +650,16 @@ async function cancelarVenta() {
     return;
   }
 
-  const autorizado = await verificarAdministrador();
+  const autorizado = await verificarUsuario();
 
-  if (!autorizado) {
-    alert("Tu sesión ya no está autorizada.");
+  if (!autorizado || !esAdministrador()) {
+    alert("No tienes autorización para cancelar ventas.");
     await cerrarSesion();
     return;
   }
 
   const boleto = boletoSeleccionado;
-
-  const numero =
-    numeroBonito(boleto.ticket_number);
+  const numero = numeroBonito(boleto.ticket_number);
 
   const confirmar = confirm(
     "¿Confirmas cancelar el boleto " +
@@ -711,9 +669,7 @@ async function cancelarVenta() {
 
   if (!confirmar) return;
 
-  const mensaje =
-    document.getElementById("mensaje");
-
+  const mensaje = document.getElementById("mensaje");
   mensaje.textContent = "Procesando cancelación...";
 
   const { data: venta, error: errorBusqueda } =
@@ -732,7 +688,6 @@ async function cancelarVenta() {
   }
 
   if (venta) {
-
     const { data: ventaCancelada, error: errorCancelar } =
       await supabaseClient
         .from("sales")
@@ -741,10 +696,14 @@ async function cancelarVenta() {
         .eq("sale_status", "active")
         .select("id");
 
-    if (errorCancelar || !ventaCancelada || ventaCancelada.length === 0) {
-
+    if (
+      errorCancelar ||
+      !ventaCancelada ||
+      ventaCancelada.length === 0
+    ) {
       mensaje.textContent =
-        "No se pudo confirmar la cancelación. El número sigue sin liberarse.";
+        "No se pudo confirmar la cancelación. " +
+        "El número sigue sin liberarse.";
 
       if (errorCancelar) {
         mensaje.textContent += " " + errorCancelar.message;
@@ -767,14 +726,11 @@ async function cancelarVenta() {
     !actualizado ||
     actualizado.length === 0
   ) {
-
     if (venta) {
-
       await supabaseClient
         .from("sales")
         .update({ sale_status: "active" })
         .eq("id", venta.id);
-
     }
 
     mensaje.textContent =
@@ -788,53 +744,47 @@ async function cancelarVenta() {
   boletoSeleccionado = null;
 
   mensaje.textContent =
-    "Boleto " + numero +
+    "Boleto " +
+    numero +
     " cancelado y devuelto a disponible.";
 
   await cargarNumeros();
 }
 
 async function cerrarSesion() {
-
   await supabaseClient.auth.signOut();
 
   usuarioAdministrador = null;
+  perfilActual = null;
   boletoSeleccionado = null;
   boletosAdmin = [];
 
   document.getElementById("panel").style.display = "none";
   document.getElementById("login").style.display = "block";
   document.getElementById("password").value = "";
-
 }
 
 async function revisarSesion() {
-
   const { data: { session } } =
     await supabaseClient.auth.getSession();
 
   if (!session) return;
 
-  const autorizado = await verificarAdministrador();
+  const autorizado = await verificarUsuario();
 
   if (autorizado) {
-
     document.getElementById("login").style.display = "none";
     document.getElementById("panel").style.display = "block";
 
+    mostrarUsuario();
     await cargarNumeros();
 
   } else {
-
     await supabaseClient.auth.signOut();
-
   }
-
 }
 
 revisarSesion();
-
 </script>
-
 </body>
-</html> 
+</html>
