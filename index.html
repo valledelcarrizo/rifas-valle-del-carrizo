@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,10 +10,14 @@
 *{box-sizing:border-box}
 body{margin:0;padding:20px;font-family:Arial,sans-serif;background:#f3f5f1;color:#26352a}
 header{text-align:center;background:#174b32;color:white;padding:28px 15px;border-radius:14px}
-h1{margin:0 0 10px;font-size:27px}header p{margin:5px}main{max-width:1000px;margin:25px auto}
+h1{margin:0 0 10px;font-size:27px}
+header p{margin:5px}
+main{max-width:1000px;margin:25px auto}
 .resumen{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0}
 .contador{background:white;padding:14px 22px;border-radius:10px;text-align:center;box-shadow:0 2px 8px #0001}
-.contador strong{display:block;font-size:25px}.disponible{color:#168044}.vendido{color:#d32626}
+.contador strong{display:block;font-size:25px}
+.disponible{color:#168044}
+.vendido{color:#d32626}
 #estado{text-align:center;margin:15px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(65px,1fr));gap:9px}
 .numero{background:white;border:1px solid #dce3dc;border-radius:9px;padding:12px 3px;text-align:center;font-weight:bold;font-size:17px}
@@ -23,25 +28,15 @@ h1{margin:0 0 10px;font-size:27px}header p{margin:5px}main{max-width:1000px;marg
 footer{text-align:center;margin-top:30px;color:#68736a;font-size:13px}
 .seccion-pago{background:#fff;padding:25px;margin:25px auto;max-width:600px;border-radius:15px;text-align:center;box-shadow:0 3px 12px #ccc}
 .boton-copiar{background:#287a45;color:white;padding:14px 25px;border:0;border-radius:8px;font-weight:bold;cursor:pointer}
-.imagen-seccion{text-align:center;padding:25px 10px}.imagen-seccion img{width:100%;max-width:700px;height:auto;border-radius:14px}
-.admin-acceso{max-width:450px;margin:35px auto 20px;padding:25px;background:white;border-radius:12px;box-shadow:0 2px 8px #0001}
-.admin-acceso h2,.admin-panel h2{text-align:center}
-.admin-acceso label,.venta-form label{display:block;margin-top:12px}
-.admin-acceso input,.venta-form input,.venta-form select{width:100%;padding:13px;margin-top:7px;border:1px solid #ccc;border-radius:7px;font-size:16px}
-.admin-acceso button,.admin-panel button{padding:12px 20px;background:#176b35;color:white;border:0;border-radius:7px;font-size:15px;cursor:pointer;margin-top:15px}
-.admin-acceso button{width:100%}
-#mensajeAdmin{text-align:center;font-weight:bold;margin-top:15px}
-.admin-panel{max-width:950px;margin:25px auto}
-.admin-card{background:white;padding:22px;border-radius:12px;margin-bottom:20px;box-shadow:0 2px 8px #0001}
-.oculto{display:none!important}
-.numero.seleccionado{outline:3px solid #e5a000;background:#fff8df}
-.ayuda{font-size:14px;color:#59665c;text-align:center}
-.venta-form{max-width:600px;margin:0 auto}
-.venta-form button{width:100%}
-button:disabled{opacity:.55;cursor:not-allowed}
+.imagen-seccion{text-align:center;padding:25px 10px}
+.imagen-seccion img{width:100%;max-width:700px;height:auto;border-radius:14px}
+.acceso-bienvenidos{text-align:center;margin:25px 0 10px}
+.acceso-bienvenidos a{color:#174b32;text-decoration:none;font-weight:bold;font-size:14px}
+.acceso-bienvenidos a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
+
 <header>
   <h1>RIFAS VALLE DEL CARRIZO</h1>
   <p>Consulta los números de nuestra rifa</p>
@@ -50,16 +45,37 @@ button:disabled{opacity:.55;cursor:not-allowed}
 
 <main>
   <div class="resumen">
-    <div class="contador"><strong id="total">100</strong>Números</div>
-    <div class="contador disponible"><strong id="libres">—</strong>Disponibles</div>
-    <div class="contador vendido"><strong id="ocupados">—</strong>Vendidos</div>
+    <div class="contador">
+      <strong id="total">100</strong>
+      Números
+    </div>
+    <div class="contador disponible">
+      <strong id="libres">—</strong>
+      Disponibles
+    </div>
+    <div class="contador vendido">
+      <strong id="ocupados">—</strong>
+      Vendidos
+    </div>
   </div>
+
   <p id="estado">Consultando números...</p>
+
   <div class="grid" id="numeros"></div>
-  <button id="actualizar" onclick="cargarNumeros()">Actualizar números</button>
+
+  <button id="actualizar" onclick="cargarNumeros()">
+    Actualizar números
+  </button>
+
+  <!-- ACCESO A ADMINISTRACIÓN -->
+  <div class="acceso-bienvenidos">
+    <a href="admin.html">¡Bienvenidos!</a>
+  </div>
 </main>
 
-<footer>Rifas Valle del Carrizo · Información actualizada desde nuestra base de datos</footer>
+<footer>
+  Rifas Valle del Carrizo · Información actualizada desde nuestra base de datos
+</footer>
 
 <section class="seccion-pago">
   <h2>FORMAS DE PAGO</h2>
@@ -67,7 +83,11 @@ button:disabled{opacity:.55;cursor:not-allowed}
   <p><strong>BanCoppel</strong></p>
   <p>Titular: Miriam Arely Torres</p>
   <p style="font-size:20px;font-weight:bold;">4169160642443163</p>
-  <button class="boton-copiar" onclick="copiarTarjeta()">COPIAR NÚMERO DE TARJETA</button>
+
+  <button class="boton-copiar" onclick="copiarTarjeta()">
+    COPIAR NÚMERO DE TARJETA
+  </button>
+
   <hr>
   <h3>IMPORTANTE</h3>
   <p>¡Gracias por su apoyo!</p>
@@ -77,6 +97,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <section class="imagen-seccion">
   <img src="pagos-miriam.jpg" alt="Formas de pago - Rifa Valle del Carrizo">
 </section>
+
 <section class="imagen-seccion">
   <img src="logopublicidad2.jpg" alt="Logo del Grupo de WhatsApp del Valle del Carrizo" style="width:50%;max-width:400px;">
 </section>
@@ -87,8 +108,12 @@ const SUPABASE_KEY = "sb_publishable_5hkytZdrjhkHUFkqC0u22A_Pjr68fOo";
 const RAFFLE_SLUG = "primera-rifa-1000";
 
 let supabaseClient = null;
+
 if (window.supabase && typeof window.supabase.createClient === "function") {
-  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 } else {
   document.getElementById("estado").textContent =
     "No se pudo cargar la conexión con la base de datos.";
@@ -96,6 +121,7 @@ if (window.supabase && typeof window.supabase.createClient === "function") {
 
 async function copiarTarjeta() {
   const tarjeta = "4169160642443163";
+
   try {
     await navigator.clipboard.writeText(tarjeta);
     alert("Número de tarjeta copiado.");
@@ -107,34 +133,60 @@ async function copiarTarjeta() {
 async function cargarNumeros() {
   const estado = document.getElementById("estado");
   const contenedor = document.getElementById("numeros");
+
+  if (!supabaseClient) {
+    estado.textContent = "No hay conexión con la base de datos.";
+    return;
+  }
+
   estado.textContent = "Actualizando números...";
+
   try {
     const { data, error } = await supabaseClient
       .from("public_ticket_board_public")
       .select("raffle_slug,raffle_name,ticket_code,ticket_status")
       .eq("raffle_slug", RAFFLE_SLUG)
       .order("ticket_code", { ascending: true });
+
     if (error) throw error;
-    if (!data || data.length === 0) throw new Error("No se encontraron números en la vista pública.");
+
+    if (!data || data.length === 0) {
+      throw new Error("No se encontraron números en la vista pública.");
+    }
 
     contenedor.innerHTML = "";
+
     let vendidos = 0;
+
     data.forEach(item => {
-      const estaVendido = String(item.ticket_status).toLowerCase() === "sold";
+      const estaVendido =
+        String(item.ticket_status).toLowerCase() === "sold";
+
       if (estaVendido) vendidos++;
+
       const tarjeta = document.createElement("div");
-      tarjeta.className = "numero " + (estaVendido ? "sold" : "available");
+      tarjeta.className =
+        "numero " + (estaVendido ? "sold" : "available");
+
       const numero = document.createElement("div");
-      numero.textContent = String(Number(item.ticket_code)).padStart(2, "0");
+      numero.textContent =
+        String(Number(item.ticket_code)).padStart(2, "0");
+
       const etiqueta = document.createElement("small");
-      etiqueta.textContent = estaVendido ? "✕ VENDIDO" : "DISPONIBLE";
+      etiqueta.textContent =
+        estaVendido ? "✕ VENDIDO" : "DISPONIBLE";
+
       tarjeta.append(numero, etiqueta);
       contenedor.appendChild(tarjeta);
     });
+
     document.getElementById("total").textContent = data.length;
     document.getElementById("ocupados").textContent = vendidos;
-    document.getElementById("libres").textContent = data.length - vendidos;
+    document.getElementById("libres").textContent =
+      data.length - vendidos;
+
     estado.textContent = "Números actualizados correctamente.";
+
   } catch (error) {
     estado.textContent = "Error: " + error.message;
   }
@@ -143,5 +195,6 @@ async function cargarNumeros() {
 cargarNumeros();
 setInterval(cargarNumeros, 30000);
 </script>
+
 </body>
 </html>
